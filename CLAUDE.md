@@ -12,4 +12,6 @@
   `~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=15000 --window-size=1280,2400 --screenshot=out.png http://127.0.0.1:8765/claude-Holstein-model/`
   (use `--window-size=390,...` for mobile). Without `--virtual-time-budget` the formulas can
   appear blank because the fonts have not loaded yet.
+  For the live site use `--timeout=20000` instead; virtual time runs out before the network
+  requests finish and the screenshot comes out blank.
 - Working files go in `$SCRATCH/claude-work/`, not `/tmp`.

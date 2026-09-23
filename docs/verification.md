@@ -29,6 +29,16 @@
 - KaTeX 字体使用 `font-display: block`。截图若不等待字体加载，公式会显示为空白；
   加 `--virtual-time-budget=15000` 后中英文页面均正常。这不影响真实浏览器，只影响截图时机。
 
+## 发布
+
+- 仓库 `rjguo1208/claude-Holstein-model`（公开），GitHub Pages 发布来源为 GitHub Actions（`build_type: workflow`），与 Codex 的 Holstein-model 相同。
+- 推送触发的 `Check theory website` 通过（run 35914097810），其中包括重新构建后 `git diff --exit-code -- site/`。
+- 手动触发的 `Deploy GitHub Pages` 通过（run 35914151600）。
+- 线上检查：`/`、`/index.html`、`/log.html`、`/en/`、`/en/index.html`、`/en/log.html`、样式表、KaTeX 字体、
+  `figures/model.svg|pdf|tex` 均返回 HTTP 200；中英文标题正确。
+- 线上截图（桌面英文、手机中文）中公式、示意图、页面目录与语言切换显示正常。远程页面截图需用
+  `--timeout=20000` 等待真实时间；`--virtual-time-budget` 在网络请求完成前就会结束，得到空白图。
+
 ## 参考文献
 
 以下条目的标题、作者、期刊、卷和页码已与 Crossref 记录核对：
