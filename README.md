@@ -19,6 +19,7 @@ phonon dispersion. The repository was renamed from `claude-Holstein-model` on 20
 ## 当前内容
 
 - [理论笔记](https://rjguo1208.github.io/dispersive-Holstein/)：色散 Holstein 模型中孤立缺陷的简易模型，研究缺陷如何改变局域电子态、局域声子态和电声耦合。只讨论基态与静态响应，不涉及缺陷激发态（不使用 Huang–Rhys 模型）。这是理论设计笔记，尚未实现或数值验证。
+- [项目计划](https://rjguo1208.github.io/dispersive-Holstein/plan.html)：从解析极限到量子晶格的分阶段计划，含验收标准、验证清单、参数扫描、风险与决策点。
 - [讨论记录](https://rjguo1208.github.io/dispersive-Holstein/log.html)：每次提问、回答所在页面和当前状态，以及交互方式。
 
 ## 与 Claude 交互 / Interaction
@@ -91,10 +92,11 @@ gh workflow run pages.yml --ref main -R rjguo1208/dispersive-Holstein
 
 ```text
 src/index.html                理论笔记（中文源与 LaTeX 公式）
+src/plan.html                 项目计划
 src/log.html                  讨论记录与交互方式
 src/locales/en.json           全站英文翻译；键为中文原文
 src/style.css                 简洁排版与打印样式
-site/index.html, site/log.html 预先渲染的中文页面
+site/*.html                   预先渲染的中文页面
 site/en/                      英文页面
 site/assets/katex/            数学样式、字体与许可证
 site/figures/                 示意图的 LaTeX、PDF 与 SVG

@@ -15,6 +15,7 @@
     <strong>页面目录</strong>
     <ul>
       <li><a href="index.html" aria-current="page">理论笔记</a></li>
+      <li><a href="plan.html">项目计划</a></li>
       <li><a href="log.html">讨论记录</a></li>
     </ul>
   </nav>
@@ -173,11 +174,11 @@
 
     <section id="coupling" aria-labelledby="coupling-title">
       <h2 id="coupling-title">5. 电声耦合改变的定量定义</h2>
-      <p>对束缚态 \(B\)，定义它与每个声子本征模 \(\lambda\)（频率 \(\omega_\lambda\)，质量加权本征矢 \(e_\lambda(j)\)）的耦合，以及耦合谱函数：</p>
+      <p>对束缚态 \(B\)，定义它与每个声子本征模 \(\nu\)（频率 \(\omega_\nu\)，质量加权本征矢 \(e_\nu(j)\)）的耦合，以及耦合谱函数：</p>
       \[
         \begin{aligned}
-        g_{B\lambda}&=\sum_j\frac{\alpha_j\,\rho_B(j)\,e_\lambda(j)}{\sqrt{2M_j\,\omega_\lambda}},\qquad
-        J_B(\omega)=\sum_\lambda|g_{B\lambda}|^2\,\delta(\omega-\omega_\lambda),\\
+        g_{B\nu}&=\sum_j\frac{\alpha_j\,\rho_B(j)\,e_\nu(j)}{\sqrt{2M_j\,\omega_\nu}},\qquad
+        J_B(\omega)=\sum_\nu|g_{B\nu}|^2\,\delta(\omega-\omega_\nu),\\
         E_{\mathrm{rel}}&=\int\frac{J_B(\omega)}{\omega}\,d\omega
         =\frac12\,\big(\alpha\circ\rho_B\big)^{\mathsf T}\,\Phi^{-1}\,\big(\alpha\circ\rho_B\big).
         \end{aligned}
@@ -263,6 +264,7 @@
         <li><strong>集中研究中间区</strong>：\(E_{\mathrm{bind}}\sim\omega_{\mathrm{loc}}\)，\(\xi_e\sim\xi_{\mathrm{ph}}\)。</li>
       </ol>
       <p>实现时要注意：\(M_d\)、\(K_d\)、\(\alpha_d\) 作用在缺陷点的声子上，嵌入方程不再只落在“电子位于缺陷点”的子空间里，而需要“缺陷点有声子、电子在任意位置”的子空间。因此对这些参数，以缺陷为中心直接对角化或做变分，比 T 矩阵嵌入更自然。</p>
+      <p>各阶段的方法、参数和验收标准见<a href="plan.html">项目计划</a>。</p>
     </section>
 
     <section id="scope" aria-labelledby="scope-title">

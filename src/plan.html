@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="色散 Holstein 模型中孤立缺陷项目的分阶段计划：单位与数值表示、各阶段的方法与验收标准、验证清单、参数扫描、代码与数据组织、风险与决策点。">
+  <meta name="theme-color" content="#ffffff">
+  <title>项目计划：色散 Holstein 模型中的孤立缺陷</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <nav class="site-nav" aria-label="站点页面目录">
+    <strong>页面目录</strong>
+    <ul>
+      <li><a href="index.html">理论笔记</a></li>
+      <li><a href="plan.html" aria-current="page">项目计划</a></li>
+      <li><a href="log.html">讨论记录</a></li>
+    </ul>
+  </nav>
+  <main id="content">
+    <header>
+      <p><a href="index.html">返回理论笔记</a></p>
+      <h1>项目计划<br>色散 Holstein 模型中的孤立缺陷</h1>
+      <p>从解析极限到量子晶格的分阶段计划：每一步做什么、用什么方法、产出什么、怎样算完成。</p>
+      <p class="muted">计划，2026-09-23，尚未开始实现。模型与物理见<a href="index.html">理论笔记</a>。范围：一维、单电子、零温，只看 \(N=0\) 与 \(N=1\) 的基态和静态响应；不涉及缺陷激发态（不用 Huang–Rhys 模型），也不涉及真实材料。</p>
+    </header>
+
+    <nav aria-label="文章目录">
+      <strong>目录</strong>
+      <ol>
+        <li><a href="#goals">目标与要回答的问题</a></li>
+        <li><a href="#setup">单位、能量零点与数值表示</a></li>
+        <li><a href="#stages">阶段总览</a></li>
+        <li><a href="#details">各阶段的内容与验收标准</a></li>
+        <li><a href="#validation">验证清单</a></li>
+        <li><a href="#scans">参数扫描</a></li>
+        <li><a href="#organization">代码、数据与网站</a></li>
+        <li><a href="#risks">风险与对策</a></li>
+        <li><a href="#decisions">决策点</a></li>
+        <li><a href="#references">参考文献</a></li>
+      </ol>
+    </nav>
+
+    <section id="goals" aria-labelledby="goals-title">
+      <h2 id="goals-title">1. 目标与要回答的问题</h2>
+      <p>目标：在理论笔记的色散 Holstein 缺陷模型中，定量回答缺陷如何改变局域电子态、局域声子态和电声耦合，以及这三者如何相互诱导。具体要回答四个问题：</p>
+      <ol>
+        <li><strong>直接与间接。</strong>理论笔记第 4 节的表在量子晶格中是否成立？每个间接效应有多大？</li>
+        <li><strong>局域模的份额。</strong>束缚电子的静态弛豫能中，局域振动模占多少（\(f_{\mathrm{loc}}\)）？它怎样随 \(\xi_e/\xi_{\mathrm{ph}}\) 变化？</li>
+        <li><strong>电子引起的软化与同位素效应。</strong>它们是否在 \(E_{\mathrm{bind}}\sim\omega_{\mathrm{loc}}\) 的中间区最大？</li>
+        <li><strong>色散的作用。</strong>增大 \(\kappa=K/K_0\) 时，束缚能、畸变范围，以及只在缺陷处耦合时的俘获阈值怎样变化？</li>
+      </ol>
+      <p class="muted">不在本计划内：缺陷激发态与光谱、散射态与 T 矩阵、有限温度、有限电子密度、键型（Peierls）耦合、真实材料。</p>
+    </section>
+
+    <section id="setup" aria-labelledby="setup-title">
+      <h2 id="setup-title">2. 单位、能量零点与数值表示</h2>
+      <h3>2.1 单位与主体参数</h3>
+      <p>取 \(t=M=K_0=1\)，于是 \(\omega_0=\sqrt{K_0/M}=1\)。主体耦合由 \(\lambda=E_p/2t\) 给定，\(\alpha=\sqrt{4\lambda tK_0}\)；\(\lambda=0.5\) 对应 \(g=1\)，即已有基准所用的 \(t=\omega_0=g=1\)。色散由 \(\kappa=K/K_0\) 控制，声子带为 \(\omega_q\in\big[1,\sqrt{1+4\kappa}\,\big]\)。改变 \(\kappa\) 时固定 \(E_p=\alpha^2/2K_0\)。</p>
+      <h3>2.2 能量零点</h3>
+      <p>所有能量都相对同一晶格的 \(N=0\) 基态，零点能因此自动抵消：</p>
+      \[
+        \Delta E=E_{N=1}-E_{N=0},\qquad E_{\mathrm{bind}}=E_{\mathrm{pol}}(k=0)-\Delta E .
+      \]
+      <p>\(E_{\mathrm{pol}}(k=0)\) 是无缺陷无限链上的极化子带底，由 k 空间 VED 计算。束缚态的 \(\Delta E\) 随链长指数收敛，而带底若用有限开链计算会有 \(1/L^2\) 的误差，所以两者分开计算。</p>
+      <h3>2.3 两种等价的精确表示</h3>
+      <p><strong>局域振子表示</strong>，用于 ED 与 DMRG：</p>
+      \[
+        \begin{aligned}
+        &\Omega_j=\sqrt{\frac{K_{0,j}+z_jK}{M_j}},\qquad u_j=\frac{b_j+b_j^\dagger}{\sqrt{2M_j\Omega_j}},\\
+        &H_{\mathrm{ph}}=\sum_j\Omega_j\big(b_j^\dagger b_j+\tfrac12\big)-K\sum_ju_ju_{j+1},\qquad
+        H_{\mathrm{ep}}=\sum_j\alpha_j\,n_j\,u_j .
+        \end{aligned}
+      \]
+      <p>\(z_j\) 是连到格点 \(j\) 的相邻弹簧数：开链内部为 2，端点为 1。相邻项含 \(b_jb_{j+1}\) 与 \(b_j^\dagger b_{j+1}^\dagger\)，全部保留，不作旋转波近似。因此 \(b\) 的真空不是 \(N=0\) 基态。</p>
+      <p><strong>简正模表示</strong>，用于 VED 与 NNQS。记 \(D=M^{-1/2}\Phi M^{-1/2}\)，\(a_\nu\) 为 \(N=0\) 晶格第 \(\nu\) 个简正模（本征矢 \(e_\nu\)）的湮灭算符，定义 \(a_j=\sum_\nu e_\nu(j)\,a_\nu\)。于是</p>
+      \[
+        H_{\mathrm{ph}}=\sum_{jl}\big[D^{1/2}\big]_{jl}\,a_j^\dagger a_l+\mathrm{const},\qquad
+        u=\frac{1}{\sqrt2}\,M^{-1/2}D^{-1/4}\big(a+a^\dagger\big).
+      \]
+      <p>\(a\) 的真空就是 \(N=0\) 基态；声子部分保持粒子数，只有耦合项产生声子，所以 Bonča–Trugman 型的变分基底只需覆盖电子附近。\(D^{1/2}\) 与 \(D^{-1/4}\) 的矩阵元随距离指数衰减。\(K\to0\) 时两种表示都回到标准 Holstein 模型的 \(\omega_0\,b^\dagger b\) 与 \(g\,n_j(b_j+b_j^\dagger)\)。</p>
+    </section>
+
+    <section id="stages" aria-labelledby="stages-title">
+      <h2 id="stages-title">3. 阶段总览</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>各阶段的内容、方法与主要产出</caption>
+          <thead><tr><th scope="col">阶段</th><th scope="col">内容</th><th scope="col">方法</th><th scope="col">主要产出</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">\(0\)</th><td>公共代码与测试</td><td>Python 模块、单元测试</td><td>统一的参数、力常数矩阵与两种表示；精确极限测试</td></tr>
+            <tr><th scope="row">\(1\)</th><td>无耦合极限</td><td>单粒子对角化与解析格林函数</td><td>\(E_B,\ \xi_e\)；\(\omega_{\mathrm{loc}},\ \xi_{\mathrm{ph}}\)；\(\rho^{\mathrm{ph}}_{00}(\omega)\)</td></tr>
+            <tr><th scope="row">\(2\)</th><td>绝热（经典晶格）极限</td><td>自洽极小化与势能面曲率</td><td>畸变、软化、\(J_B\)、\(f_{\mathrm{loc}}\)、俘获阈值</td></tr>
+            <tr><th scope="row">\(3\)</th><td>量子晶格基准</td><td>ED、DMRG、VED；k 空间 VED</td><td>方法间的一致性；主体极化子带底；选定生产方法</td></tr>
+            <tr><th scope="row">\(4\)</th><td>量子晶格扫描</td><td>阶段 3 选定的方法</td><td>第 4 节表的逐格结果；同位素效应；纠缠</td></tr>
+            <tr><th scope="row">\(5\)</th><td>色散与维度</td><td>同上；可选 Bethe 晶格</td><td>\(\kappa\) 的影响；阈值的变化</td></tr>
+            <tr><th scope="row">\(6\)</th><td>神经网络量子态（可选）</td><td>简正模表示下的 NNQS</td><td>与 DMRG、VED 的比较</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>阶段 0–2 计算量小，阶段 3–5 在 Anvil 上用 SLURM 提交。每个阶段完成后都在网站上发布结果页，并在讨论记录中追加一条。</p>
+    </section>
+
+    <section id="details" aria-labelledby="details-title">
+      <h2 id="details-title">4. 各阶段的内容与验收标准</h2>
+
+      <h3>阶段 0：公共代码与测试</h3>
+      <ul>
+        <li><strong>内容：</strong>一个模块统一定义参数（\(t,\ M_j,\ K_{0,j},\ K,\ \alpha_j,\ \varepsilon_d,\ L\)）、力常数矩阵 \(\Phi\)、两种表示所需的矩阵 \(D^{1/2}\) 与 \(D^{-1/4}\)，以及理论笔记第 7 节各可观测量的计算函数。所有后续阶段都调用它。</li>
+        <li><strong>验收：</strong>\(\Phi\) 正定；\(K\to0\) 时两种表示逐项相同；测试随代码一起提交。</li>
+      </ul>
+
+      <h3>阶段 1：无耦合极限</h3>
+      <ul>
+        <li><strong>内容：</strong>取 \(\alpha=\alpha_d=0\)。电子侧是 Koster–Slater 束缚态<a href="#ref-koster">[1]</a>；声子侧是质量与刚度缺陷的局域振动模<a href="#ref-montroll">[2]</a>。</li>
+        <li><strong>方法：</strong>长开链（\(L=2001\)）上的直接对角化，并与一维解析格林函数比较。</li>
+        <li><strong>产出：</strong>\(E_B,\ \xi_e,\ \langle n_0\rangle\)；\(\omega_{\mathrm{loc}},\ \xi_{\mathrm{ph}},\ \rho^{\mathrm{ph}}_{00}(\omega)\)；\(N=0\) 基态中缺陷点的 \(\langle\delta u_0^2\rangle\) 与 \(\langle\delta p_0^2\rangle\)。</li>
+        <li><strong>验收：</strong>数值与解析结果相差小于 \(10^{-10}\)（验证清单 V1）。</li>
+      </ul>
+
+      <h3>阶段 2：绝热（经典晶格）极限</h3>
+      <ul>
+        <li><strong>内容：</strong>对给定的 \(u\) 求电子基态，由 \(F=\alpha\circ\rho\) 更新 \(u=-\Phi^{-1}F\)，迭代到自洽；从局域与扩展两种初值出发，以发现多解。然后用电子基态的静态响应 \(\chi\) 构造 \(\Phi_{\mathrm{eff}}\)，求 \(N=1\) 的简正模并与 \(N=0\) 比较。</li>
+        <li><strong>产出：</strong>畸变 \(\langle u_j\rangle\)、局域模频移、\(J_B(\omega)\)、\(E_{\mathrm{rel}}\)、\(f_{\mathrm{loc}}\)，以及 Born–Oppenheimer 下的零点能差（同位素效应的绝热估计）。</li>
+        <li><strong>验收：</strong>恒等式 \(\langle u\rangle=-\Phi^{-1}(\alpha\circ\rho)\) 精确成立；\(\alpha=0\)、\(\varepsilon_d=0\) 的 Einstein 极限下阈值为 \(E_{p,d}=t\)；静态量与质量无关（V4、V6、V9）。</li>
+      </ul>
+
+      <h3>阶段 3：量子晶格基准</h3>
+      <ul>
+        <li><strong>内容：</strong>在少数参数点上比较三种量子方法，并建立主体极化子的 k 空间参考。</li>
+        <li><strong>方法：</strong>
+          ED（\(L\le8\)，截断声子数）；
+          DMRG（局域振子表示，开链 \(L=60\)–\(200\)）<a href="#ref-jeckelmann">[3]</a>，程序用 TeNPy<a href="#ref-tenpy">[4]</a> 或 ITensor<a href="#ref-itensor">[5]</a>，比较后选定；
+          VED（简正模表示，以缺陷为中心生成基底）<a href="#ref-bonca">[6]</a>；
+          把已有的 k 空间 VED 程序推广到色散声子<a href="#ref-marchand">[7]</a>，给出 \(E_{\mathrm{pol}}(k)\)、\(Z_k\)、\(m^*\)。</li>
+        <li><strong>验收：</strong>
+          \(K=0\) 且无缺陷时，k 空间 VED 给出 \(E(0)=-2.4696847\)、\(Z_0=0.738435\)、\(m^*/m_0=1.35063\)（\(\lambda=0.5\)，已有基准）；
+          DMRG 的 \(N=0\) 能量与精确值 \(\tfrac12\sum_\nu\omega_\nu\) 一致；
+          同一参数点上各方法的 \(\Delta E\) 相差小于 \(10^{-6}\,t\)（ED 只与同一有限体系比较）；
+          Hellmann–Feynman 有限差分检验通过（V2、V3、V5、V8）。</li>
+      </ul>
+
+      <h3>阶段 4：量子晶格扫描</h3>
+      <ul>
+        <li><strong>内容：</strong>按第 6 节的扫描，在 \(N=0\) 与 \(N=1\) 下计算理论笔记第 7 节的全部基态量：\(\Delta E\) 与 \(E_{\mathrm{bind}}\)；\(\langle n_j\rangle\)、\(\xi_e\)、逆参与比；电子约化密度矩阵的纯度与 \(\rho_e(0,\pm1)\)；\(\langle u_j\rangle\)；\(\omega_{\mathrm{eff},j}\)；关联 \(\langle n_0u_0\rangle-\langle n_0\rangle\langle u_0\rangle\)；同位素导数。</li>
+        <li><strong>逐模静态弛豫：</strong>由恒等式，只需精确的密度就能把静态弛豫能分解到 \(N=0\) 的各个简正模：
+          \[
+            E_{\mathrm{rel},\nu}=\frac{1}{2\omega_\nu^2}\Big(\sum_j\frac{F_j\,e_\nu(j)}{\sqrt{M_j}}\Big)^2,\qquad
+            F_j=\alpha_j\langle n_j\rangle,\qquad
+            \sum_\nu E_{\mathrm{rel},\nu}=\tfrac12F^{\mathsf T}\Phi^{-1}F .
+          \]
+          局域模所占的比例即 \(f_{\mathrm{loc}}\)。</li>
+        <li><strong>验收：</strong>每个点通过截断收敛与恒等式检查；大质量（绝热）极限回到阶段 2；弱缺陷时 \(E_{\mathrm{bind}}\to m^*\varepsilon_d^2/2\)（V4、V7、V8）。</li>
+      </ul>
+
+      <h3>阶段 5：色散与维度</h3>
+      <ul>
+        <li><strong>内容：</strong>比较 \(\kappa=0,\ 0.1,\ 0.25\)；研究只在缺陷处耦合时，阈值怎样随 \(\omega_0/t\) 与 \(\kappa\) 变化。可选：用 Bethe 晶格或二维看高维中的阈值与双稳。</li>
+        <li><strong>验收：</strong>\(\kappa=0\) 与 Holstein 结果一致；只有超出收敛误差的 \(\kappa\) 效应才下结论。</li>
+      </ul>
+
+      <h3>阶段 6：神经网络量子态（可选）</h3>
+      <ul>
+        <li><strong>内容：</strong>在简正模表示下，用绝对坐标的 NNQS 计算阶段 4 的若干参数点，并与 DMRG、VED 比较能量和可观测量。</li>
+        <li><strong>验收：</strong>能量误差与可观测量偏差给出明确数字；不用 NNQS 单独给出物理结论。</li>
+      </ul>
+    </section>
+
+    <section id="validation" aria-labelledby="validation-title">
+      <h2 id="validation-title">5. 验证清单</h2>
+      <ol>
+        <li><strong>V1 无耦合：</strong>\(E_B=-\sqrt{4t^2+\varepsilon_d^2}\)，\(\langle n_0\rangle=|\varepsilon_d|/\sqrt{4t^2+\varepsilon_d^2}\)；局域振动模频率与一维解析条件一致。</li>
+        <li><strong>V2 Holstein 极限：</strong>\(K=0\)、无缺陷时回到已有基准 \(E(0)=-2.4696847\)、\(Z_0=0.738435\)、\(m^*/m_0=1.35063\)。</li>
+        <li><strong>V3 原子极限：</strong>\(t=0\) 时，电子位于缺陷点的本征态满足 \(\Delta E=\varepsilon_d-\tfrac12\alpha_d^2\big[\Phi^{-1}\big]_{00}\) 对任意 \(K\) 精确成立。</li>
+        <li><strong>V4 畸变恒等式：</strong>每个计算态都满足 \(\langle u\rangle=-\Phi^{-1}(\alpha\circ\langle n\rangle)\)；偏差用来监控截断误差。</li>
+        <li><strong>V5 Hellmann–Feynman：</strong>对 \(\varepsilon_d,\ \alpha_d,\ K_d,\ M_d\) 的有限差分分别等于 \(\langle n_0\rangle\)、\(\langle n_0u_0\rangle\)、\(\tfrac12\langle u_0^2\rangle\)、\(-\langle p_0^2\rangle/2M_d^2\)。</li>
+        <li><strong>V6 阈值：</strong>经典晶格下只在缺陷处耦合时，阈值为 \(E_{p,d}=t\)；量子声子下任意 \(g_d\) 都束缚。固定 \(E_{p,d}\) 取 \(\omega_0\to0\) 时，\(E_{p,d}\lt t\) 的束缚能趋于零，\(E_{p,d}\gt t\) 的束缚能趋于绝热值。</li>
+        <li><strong>V7 弱缺陷：</strong>\(E_{\mathrm{bind}}\to m^*\varepsilon_d^2/2\)，\(m^*\) 取色散主体的极化子有效质量。</li>
+        <li><strong>V8 收敛与交叉检验：</strong>声子截断、基底大小或键维数、链长 \(L\) 的收敛；DMRG、VED、ED 之间的交叉检验。</li>
+        <li><strong>V9 质量无关：</strong>绝热极限的静态量不随质量变化；量子结果在 \(M\to\infty\)（固定刚度）时趋于绝热结果。</li>
+      </ol>
+    </section>
+
+    <section id="scans" aria-labelledby="scans-title">
+      <h2 id="scans-title">6. 参数扫描</h2>
+      <p>主体取 \(\lambda\in\{0.25,\ 0.5\}\)、\(\kappa\in\{0,\ 0.1,\ 0.25\}\)，共 6 组。每组做以下单参数扫描，其余参数取主体值：</p>
+      <div class="table-scroll">
+        <table>
+          <caption>单参数扫描与只在缺陷处耦合的系列</caption>
+          <thead><tr><th scope="col">参数</th><th scope="col">取值</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">\(\varepsilon_d/t\)</th><td>\(-0.25,\ -0.5,\ -1,\ -2,\ -3\)</td></tr>
+            <tr><th scope="row">\(\alpha_d/\alpha\)</th><td>\(0.5,\ 1.5,\ 2\)</td></tr>
+            <tr><th scope="row">\(K_d/K_0\)</th><td>\(0.5,\ 0.75,\ 1.5,\ 2\)</td></tr>
+            <tr><th scope="row">\(M_d/M\)</th><td>\(0.5,\ 2,\ 4\)</td></tr>
+            <tr><th scope="row">只在缺陷处耦合</th><td>\(\alpha=0,\ \varepsilon_d=0\)；\(E_{p,d}/t=0.5,\ 1,\ 1.5,\ 2\)；\(\omega_0/t=0.25,\ 0.5,\ 1\)（改变 \(M\)）；\(\kappa=0,\ 0.1\)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>单参数扫描共 \(15\times6=90\) 个缺陷点，只在缺陷处耦合的系列共 24 个点，另加各自的 \(N=0\) 参考。中间区的二维参数图（例如 \(\varepsilon_d\) 与 \(K_d/K_0\)、\(\varepsilon_d\) 与 \(M_d/M\)）在阶段 2 之后再定（决策点 D1）。</p>
+    </section>
+
+    <section id="organization" aria-labelledby="organization-title">
+      <h2 id="organization-title">7. 代码、数据与网站</h2>
+      <ul>
+        <li><strong>代码：</strong>放在本仓库 <code>research/dispersive-defect/</code>下：公共模块（阶段 0）、各阶段的程序、测试、SLURM 脚本，以及写明复现方法的 README。</li>
+        <li><strong>数据：</strong>结果写成 CSV 与 JSON，记录全部参数与收敛信息，放在 <code>site/data/</code>；大的原始数据放在 GitHub Release。</li>
+        <li><strong>图：</strong>SVG 与 PDF，按 Physical Review 的版式，标注用英文或数学符号，放在 <code>site/results/</code>。</li>
+        <li><strong>网站：</strong>每个阶段一个中英文结果页，另附 <code>docs/</code>下的验证记录。状态分为“计划、进行中、已验证、未通过”；构建或部署成功不等于验证通过。</li>
+      </ul>
+    </section>
+
+    <section id="risks" aria-labelledby="risks-title">
+      <h2 id="risks-title">8. 风险与对策</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>主要风险、影响与对策</caption>
+          <thead><tr><th scope="col">风险</th><th scope="col">影响</th><th scope="col">对策</th></tr></thead>
+          <tbody>
+            <tr><td>缺陷处强耦合或软弹簧使局域位移很大</td><td>声子截断误差</td><td>以绝热位移为中心的平移基底，或局域基底优化<a href="#ref-zhang-lbo">[8]</a>；用恒等式 V4 监控</td></tr>
+            <tr><td>浅能级的 \(\xi_e\) 很大</td><td>有限尺寸误差</td><td>取 \(L\gtrsim10\,\xi_e\)；定量扫描先限于 \(|\varepsilon_d|\ge0.25\,t\)；带底用 k 空间 VED</td></tr>
+            <tr><td>开链端点少一根弹簧</td><td>端点出现假的局域模</td><td>缺陷放在链中心，检查 \(L\) 依赖</td></tr>
+            <tr><td>软缺陷接近晶格失稳</td><td>\(\Phi\) 或 \(\Phi_{\mathrm{eff}}\) 不再正定</td><td>先取 \(K_d/K_0\ge0.5\)，监控最低频率</td></tr>
+            <tr><td>\(b\) 的真空不是 \(N=0\) 基态</td><td>VED 基底失控，能量零点出错</td><td>VED 与 NNQS 用简正模表示；能量一律相对 \(N=0\) 基态</td></tr>
+            <tr><td>绝热方程有多个解</td><td>结论依赖初值</td><td>从多个初值出发，比较能量</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="decisions" aria-labelledby="decisions-title">
+      <h2 id="decisions-title">9. 决策点</h2>
+      <p>每个决策点都把结果和选项写到网站上，经你确认后再继续。</p>
+      <ol>
+        <li><strong>D1（阶段 2 之后）：</strong>选定量子计算的重点区域（中间区的参数范围）和 \(\kappa\) 的取值。</li>
+        <li><strong>D2（阶段 3 之后）：</strong>选定生产方法（DMRG 或 VED）与收敛标准。</li>
+        <li><strong>D3（阶段 4 之后）：</strong>决定扩展方向：色散与维度、NNQS、键型耦合、自旋与荷电态。</li>
+      </ol>
+    </section>
+
+    <section id="references" aria-labelledby="references-title">
+      <h2 id="references-title">10. 参考文献</h2>
+      <ol class="references">
+        <li id="ref-koster">G. F. Koster and J. C. Slater, <a href="https://doi.org/10.1103/PhysRev.96.1208">Simplified Impurity Calculation</a>, Phys. Rev. 96, 1208 (1954). 在位势缺陷的格林函数解法。</li>
+        <li id="ref-montroll">E. W. Montroll and R. B. Potts, <a href="https://doi.org/10.1103/PhysRev.100.525">Effect of Defects on Lattice Vibrations</a>, Phys. Rev. 100, 525 (1955). 缺陷引起的局域振动模。</li>
+        <li id="ref-jeckelmann">E. Jeckelmann and S. R. White, <a href="https://doi.org/10.1103/PhysRevB.57.6376">Density-matrix renormalization-group study of the polaron problem in the Holstein model</a>, Phys. Rev. B 57, 6376 (1998). 用 DMRG 研究 Holstein 极化子。</li>
+        <li id="ref-tenpy">J. Hauschild and F. Pollmann, <a href="https://doi.org/10.21468/SciPostPhysLectNotes.5">Efficient numerical simulations with Tensor Networks: Tensor Network Python (TeNPy)</a>, SciPost Phys. Lect. Notes 5 (2018). Python 张量网络程序库。</li>
+        <li id="ref-itensor">M. Fishman, S. R. White and E. M. Stoudenmire, <a href="https://doi.org/10.21468/SciPostPhysCodeb.4">The ITensor Software Library for Tensor Network Calculations</a>, SciPost Phys. Codebases 4 (2022). Julia 张量网络程序库。</li>
+        <li id="ref-bonca">J. Bonča, S. A. Trugman and I. Batistić, <a href="https://doi.org/10.1103/PhysRevB.60.1633">Holstein polaron</a>, Phys. Rev. B 60, 1633 (1999). 变分精确对角化（VED）。</li>
+        <li id="ref-marchand">D. J. J. Marchand and M. Berciu, <a href="https://doi.org/10.1103/PhysRevB.88.060301">Effect of dispersive optical phonons on the behavior of a Holstein polaron</a>, Phys. Rev. B 88, 060301 (2013). 带色散光学声子的 Holstein 极化子。</li>
+        <li id="ref-zhang-lbo">C. Zhang, E. Jeckelmann and S. R. White, <a href="https://doi.org/10.1103/PhysRevLett.80.2661">Density Matrix Approach to Local Hilbert Space Reduction</a>, Phys. Rev. Lett. 80, 2661 (1998). 声子局域基底的优化。</li>
+      </ol>
+      <p class="muted">以上条目的标题、作者、期刊、卷与页码已与 Crossref 记录核对。</p>
+    </section>
+
+    <footer>
+      <p>色散 Holstein 模型中的孤立缺陷 · <a href="https://github.com/rjguo1208/dispersive-Holstein">页面与图的源文件</a> · <a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">提问或反馈</a></p>
+    </footer>
+  </main>
+</body>
+</html>
