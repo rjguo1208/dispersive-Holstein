@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="按时间记录本项目的提问、回答所在页面和当前状态，并说明如何通过本站与 Claude 交互。">
   <meta name="theme-color" content="#ffffff">
-  <title>讨论记录：孤立缺陷与 Holstein 模型</title>
+  <title>讨论记录：色散 Holstein 模型中的孤立缺陷</title>
   <link rel="stylesheet" href="assets/katex/katex.min.css">
   <link rel="stylesheet" href="assets/style.css">
   <link rel="alternate" hreflang="zh-CN" href="log.html">
@@ -36,7 +36,7 @@
       <h2 id="interaction-title">如何交互</h2>
       <ol>
         <li>在 Claude Code 中提问。需要公式或图的讲解会写到本站，终端里给出链接和简短摘要。</li>
-        <li>对某页或某节有疑问，可以在 GitHub 上<a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">提交 issue</a>，注明页面和小节。在 Claude Code 中请 Claude 查看网站反馈时，它会读取 issue、在 issue 中回复，并把需要的修改写进页面。</li>
+        <li>对某页或某节有疑问，可以在 GitHub 上<a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">提交 issue</a>，注明页面和小节。在 Claude Code 中请 Claude 查看网站反馈时，它会读取 issue、在 issue 中回复，并把需要的修改写进页面。</li>
         <li>每次更新都同时维护中文和英文，并在下面追加一条记录。</li>
       </ol>
     </section>
@@ -45,10 +45,15 @@
       <h2 id="log-title">记录</h2>
       <p class="muted">最新的在最上面。</p>
       <ol class="log-entries" reversed>
+        <li id="q-2026-09-23-naming">
+          <p class="muted">2026-09-23 · 已回答；仓库已改名</p>
+          <p><strong>提问</strong>：我们在这个 project 中不再使用 Holstein model，因为我们需要让 phonon dispersion 不再是常数，所以是不是应该命名为 Peierls model？随后决定：改成 dispersive-Holstein，去掉 claude。</p>
+          <p><strong>回答</strong>：不叫 Peierls 模型。Holstein 与 Peierls 区分的是电子怎样耦合到晶格，色散是独立的选择；本项目的模型是带色散光学声子的 Holstein 型模型，见<a href="index.html#naming">理论笔记 2.1 节</a>。仓库与网站改名为 dispersive-Holstein，原网址停用。</p>
+        </li>
         <li id="q-2026-09-23-site">
           <p class="muted">2026-09-23 · 已建立</p>
           <p><strong>提问</strong>：参照 Codex 的工作流，建立一个同样的 GitHub 仓库和相同结构的网站，用于存放本项目的内容并与我交互。</p>
-          <p><strong>回答</strong>：<a href="https://github.com/rjguo1208/claude-Holstein-model">GitHub 仓库</a>与本站。</p>
+          <p><strong>回答</strong>：<a href="https://github.com/rjguo1208/dispersive-Holstein">GitHub 仓库</a>与本站。</p>
         </li>
         <li id="q-2026-09-23-model">
           <p class="muted">2026-09-23 · 理论思路，尚未实现或数值验证</p>
@@ -59,7 +64,7 @@
     </section>
 
     <footer>
-      <p>孤立缺陷与 Holstein 模型研究笔记（Claude 维护）· <a href="https://github.com/rjguo1208/claude-Holstein-model">页面与图的源文件</a> · <a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">提问或反馈</a></p>
+      <p>色散 Holstein 模型中的孤立缺陷 · <a href="https://github.com/rjguo1208/dispersive-Holstein">页面与图的源文件</a> · <a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">提问或反馈</a></p>
     </footer>
   </main>
 </body>

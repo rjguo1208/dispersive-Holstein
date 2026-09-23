@@ -7,9 +7,9 @@
   gives Python 3.13 with Pillow for screenshot cropping.
 - Figures: `TECTONIC=$SCRATCH/claude-work/tools/tectonic TMPDIR=$SCRATCH/claude-work/tmp npm run figures`
   (Tectonic 0.17.0; its bundle cache is in `~/.cache/tectonic`).
-- Browser check: serve a directory containing a `claude-Holstein-model -> site` symlink with
+- Browser check: serve a directory containing a `dispersive-Holstein -> site` symlink with
   `python3 -m http.server 8765 --bind 127.0.0.1`, then run
-  `~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=15000 --window-size=1280,2400 --screenshot=out.png http://127.0.0.1:8765/claude-Holstein-model/`
+  `~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --no-sandbox --disable-gpu --hide-scrollbars --virtual-time-budget=15000 --window-size=1280,2400 --screenshot=out.png http://127.0.0.1:8765/dispersive-Holstein/`
   (use `--window-size=390,...` for mobile). Without `--virtual-time-budget` the formulas can
   appear blank because the fonts have not loaded yet.
   For the live site use `--timeout=20000` instead; virtual time runs out before the network

@@ -1,8 +1,10 @@
 # Website maintenance
 
-This repository is the project website that Claude maintains for the
-isolated-defect / Holstein-model project. It follows the structure and rules of
-the Codex-maintained `rjguo1208/Holstein-model` site.
+This repository is the website for the isolated-defect project: a Holstein-type
+(local density) coupling with dispersive optical phonons, the "dispersive Holstein
+model" (not a Peierls/SSH model). Claude maintains it. It follows the structure
+and rules of the Codex-maintained `rjguo1208/Holstein-model` site. The repository
+was renamed from `claude-Holstein-model` to `dispersive-Holstein` on 2026-09-23.
 
 ## Bilingual pages (user requirement)
 
@@ -36,7 +38,7 @@ The user requires Chinese and English versions to be updated together.
 - Cite only references whose metadata has been checked (for example against
   Crossref). Never publish references written from memory.
 - Feedback arrives as GitHub issues
-  (`gh issue list -R rjguo1208/claude-Holstein-model`). When asked to check it,
+  (`gh issue list -R rjguo1208/dispersive-Holstein`). When asked to check it,
   reply in the issue, make and log the page changes, and close the issue only
   once it has been addressed.
 
@@ -48,8 +50,8 @@ The user requires Chinese and English versions to be updated together.
 - Run `npm run build` and `npm run check`, and commit the regenerated `site/`
   pages and assets together with the source changes.
 - Check language switching and navigation on desktop and mobile, including the
-  GitHub Pages `/claude-Holstein-model/` prefix. KaTeX fonts use
+  GitHub Pages `/dispersive-Holstein/` prefix. KaTeX fonts use
   `font-display: block`, so screenshots must wait for fonts to load.
 - Publish both language versions together: push to `main`, then run
-  `gh workflow run pages.yml --ref main -R rjguo1208/claude-Holstein-model`.
+  `gh workflow run pages.yml --ref main -R rjguo1208/dispersive-Holstein`.
 - Commit messages carry no `Co-Authored-By` trailer.

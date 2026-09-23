@@ -8,7 +8,7 @@ body:
     attributes:
       label: 页面与小节 / Page and section
       description: 例如“理论笔记 4.2”，或粘贴页面链接 / For example "Theory notes 4.2", or paste the page link
-      placeholder: https://rjguo1208.github.io/claude-Holstein-model/#knobs
+      placeholder: https://rjguo1208.github.io/dispersive-Holstein/#knobs
     validations:
       required: true
   - type: textarea

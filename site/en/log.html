@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A dated record of the questions in this project, where each answer lives and its current status, and how to interact with Claude through this site.">
   <meta name="theme-color" content="#ffffff">
-  <title>Discussion log: an isolated defect and the Holstein model</title>
+  <title>Discussion log: an isolated defect in the dispersive Holstein model</title>
   <link rel="stylesheet" href="../assets/katex/katex.min.css">
   <link rel="stylesheet" href="../assets/style.css">
   <link rel="alternate" hreflang="zh-CN" href="../log.html">
@@ -36,7 +36,7 @@
       <h2 id="interaction-title">How to interact</h2>
       <ol>
         <li>Ask in Claude Code. Explanations that need equations or figures are written to this site, and the terminal reply gives the link and a short summary.</li>
-        <li>For questions about a page or section, you can <a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">open an issue</a> on GitHub, naming the page and section. When asked in Claude Code to check the website feedback, Claude reads the issues, replies in them, and writes any required changes into the pages.</li>
+        <li>For questions about a page or section, you can <a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">open an issue</a> on GitHub, naming the page and section. When asked in Claude Code to check the website feedback, Claude reads the issues, replies in them, and writes any required changes into the pages.</li>
         <li>Every update maintains the Chinese and English versions together and appends an entry below.</li>
       </ol>
     </section>
@@ -45,10 +45,15 @@
       <h2 id="log-title">Log</h2>
       <p class="muted">Newest first.</p>
       <ol class="log-entries" reversed>
+        <li id="q-2026-09-23-naming">
+          <p class="muted">2026-09-23 · Answered; repository renamed</p>
+          <p><strong>Question</strong>: We no longer use the Holstein model in this project, because the phonon dispersion must no longer be constant; so should it be called the Peierls model? Follow-up decision: rename it dispersive-Holstein and drop "claude".</p>
+          <p><strong>Answer</strong>: Not a Peierls model. Holstein and Peierls distinguish how the electron couples to the lattice, and dispersion is an independent choice; the model of this project is a Holstein-type model with dispersive optical phonons, see <a href="index.html#naming">Theory notes, Section 2.1</a>. The repository and website are renamed dispersive-Holstein, and the old address is no longer served.</p>
+        </li>
         <li id="q-2026-09-23-site">
           <p class="muted">2026-09-23 · Established</p>
           <p><strong>Question</strong>: Following the Codex workflow, create an equivalent GitHub repository and a website with the same structure to store this project's content and to interact with me.</p>
-          <p><strong>Answer</strong>: <a href="https://github.com/rjguo1208/claude-Holstein-model">GitHub repository</a> and this site.</p>
+          <p><strong>Answer</strong>: <a href="https://github.com/rjguo1208/dispersive-Holstein">GitHub repository</a> and this site.</p>
         </li>
         <li id="q-2026-09-23-model">
           <p class="muted">2026-09-23 · Theoretical reasoning; not yet implemented or numerically validated</p>
@@ -59,7 +64,7 @@
     </section>
 
     <footer>
-      <p>Research notes on an isolated defect and the Holstein model (maintained by Claude) · <a href="https://github.com/rjguo1208/claude-Holstein-model">Source files for the pages and figures</a> · <a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">Questions or feedback</a></p>
+      <p>An isolated defect in the dispersive Holstein model · <a href="https://github.com/rjguo1208/dispersive-Holstein">Source files for the pages and figures</a> · <a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">Questions or feedback</a></p>
     </footer>
   </main>
 </body>

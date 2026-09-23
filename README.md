@@ -1,22 +1,30 @@
-# 孤立缺陷与 Holstein 模型（Claude 研究笔记）
+# 色散 Holstein 模型中的孤立缺陷
 
-网站：<https://rjguo1208.github.io/claude-Holstein-model/> · [English](https://rjguo1208.github.io/claude-Holstein-model/en/)
+网站：<https://rjguo1208.github.io/dispersive-Holstein/> · [English](https://rjguo1208.github.io/dispersive-Holstein/en/)
 
-这是 Claude 为本项目维护的中英文网站，用来存放项目内容，也是与 Claude 交互的地方。结构和规则沿用 Codex 维护的 [Holstein-model](https://github.com/rjguo1208/Holstein-model)：LaTeX 公式在构建时预先排版，TikZ 图编译成 PDF 和 SVG，中英文两个版本同步维护，经 GitHub Actions 发布到 GitHub Pages。
+这是本项目的中英文网站，由 Claude 维护，用来存放项目内容，也是与 Claude 交互的地方。结构和规则沿用 Codex 维护的 [Holstein-model](https://github.com/rjguo1208/Holstein-model)：LaTeX 公式在构建时预先排版，TikZ 图编译成 PDF 和 SVG，中英文两个版本同步维护，经 GitHub Actions 发布到 GitHub Pages。
 
-This is the bilingual website Claude maintains for this project: it stores the project
+This is the bilingual website of this project, maintained by Claude: it stores the project
 content and is the place to interact with Claude. It follows the structure and rules of
 the Codex-maintained [Holstein-model](https://github.com/rjguo1208/Holstein-model) site.
 
+## 模型名称 / Naming
+
+本项目的模型是**带色散光学声子的 Holstein 型模型**（色散 Holstein 模型）：电子密度与本格点位移的局域耦合保持 Holstein 型，只是声子有了色散。它不是 Peierls（SSH、键型）模型——Holstein 与 Peierls 区分的是耦合方式，与声子色散无关。说明与分类表见 [理论笔记 2.1 节](https://rjguo1208.github.io/dispersive-Holstein/#naming)。仓库原名 `claude-Holstein-model`，2026-09-23 改为 `dispersive-Holstein`，原网址已停用。
+
+The model is a Holstein-type (local density) coupling with dispersive optical phonons,
+not a Peierls/SSH model: Holstein versus Peierls refers to the coupling, not to the
+phonon dispersion. The repository was renamed from `claude-Holstein-model` on 2026-09-23.
+
 ## 当前内容
 
-- [理论笔记](https://rjguo1208.github.io/claude-Holstein-model/)：孤立缺陷的简易模型，研究缺陷如何改变局域电子态、局域声子态和电声耦合。只讨论基态与静态响应，不涉及缺陷激发态（不使用 Huang–Rhys 模型）。这是理论设计笔记，尚未实现或数值验证。
-- [讨论记录](https://rjguo1208.github.io/claude-Holstein-model/log.html)：每次提问、回答所在页面和当前状态，以及交互方式。
+- [理论笔记](https://rjguo1208.github.io/dispersive-Holstein/)：色散 Holstein 模型中孤立缺陷的简易模型，研究缺陷如何改变局域电子态、局域声子态和电声耦合。只讨论基态与静态响应，不涉及缺陷激发态（不使用 Huang–Rhys 模型）。这是理论设计笔记，尚未实现或数值验证。
+- [讨论记录](https://rjguo1208.github.io/dispersive-Holstein/log.html)：每次提问、回答所在页面和当前状态，以及交互方式。
 
 ## 与 Claude 交互 / Interaction
 
 1. 在 Claude Code 中提问。需要公式或图的讲解会写到本站，终端里给出链接和简短摘要。
-2. 对某页或某节有疑问，可以用 [问题或反馈模板](https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose)提交 issue。请 Claude 查看网站反馈时，它会读取 issue、在 issue 中回复，并把修改写进页面。
+2. 对某页或某节有疑问，可以用 [问题或反馈模板](https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose)提交 issue。请 Claude 查看网站反馈时，它会读取 issue、在 issue 中回复，并把修改写进页面。
 3. 每次更新都同时维护中文和英文，并在讨论记录中追加一条。
 
 Ask in Claude Code, or open an issue with the question template; Claude replies in the
@@ -74,10 +82,10 @@ npm run check
 GitHub Pages 的发布来源为 GitHub Actions。推送到 `main` 会运行检查；发布由 `Deploy GitHub Pages` 工作流手动触发：
 
 ```bash
-gh workflow run pages.yml --ref main -R rjguo1208/claude-Holstein-model
+gh workflow run pages.yml --ref main -R rjguo1208/dispersive-Holstein
 ```
 
-检查和发布流程都会重新渲染公式、验证本地链接与图文件，并确认发布产物与源文件一致。工作流只上传 `site/`，所有资源路径兼容 `/claude-Holstein-model/` 子路径。
+检查和发布流程都会重新渲染公式、验证本地链接与图文件，并确认发布产物与源文件一致。工作流只上传 `site/`，所有资源路径兼容 `/dispersive-Holstein/` 子路径。
 
 ## 文件结构
 
