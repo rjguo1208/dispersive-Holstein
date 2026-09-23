@@ -108,4 +108,4 @@ docs/                         每次发布的验证记录
 AGENTS.md                     维护规则（CLAUDE.md 引用它）
 ```
 
-KaTeX 的许可证随发布资源保留在 `site/assets/katex/LICENSE`。本版的构建、浏览器与参考文献检查见 [验证记录](docs/verification.md)。
+KaTeX 的许可证随发布资源保留在 `site/assets/katex/LICENSE`。首版的构建、浏览器与参考文献检查见 [验证记录](docs/verification.md)；改名与模型名称说明的检查见 [改名验证记录](docs/naming-update-verification.md)。
