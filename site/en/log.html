@@ -1,0 +1,66 @@
+<!-- Generated from src/log.html and src/locales/en.json. Run npm run build. -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A dated record of the questions in this project, where each answer lives and its current status, and how to interact with Claude through this site.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Discussion log: an isolated defect and the Holstein model</title>
+  <link rel="stylesheet" href="../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="alternate" hreflang="zh-CN" href="../log.html">
+  <link rel="alternate" hreflang="en" href="log.html">
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+<nav class="language-switch" aria-label="Language">
+  <a href="../log.html" lang="zh-CN" hreflang="zh-CN">中文</a>
+  <a href="log.html" lang="en" hreflang="en" aria-current="true">English</a>
+</nav>
+  <nav class="site-nav" aria-label="Site pages">
+    <strong>Pages</strong>
+    <ul>
+      <li><a href="index.html">Theory notes</a></li>
+      <li><a href="log.html" aria-current="page">Discussion log</a></li>
+    </ul>
+  </nav>
+  <main id="content">
+    <header>
+      <p><a href="index.html">Back to the theory notes</a></p>
+      <h1>Discussion log</h1>
+      <p>A dated record of each question, the page that holds the answer and its current status. The page text itself is authoritative.</p>
+    </header>
+
+    <section id="interaction" aria-labelledby="interaction-title">
+      <h2 id="interaction-title">How to interact</h2>
+      <ol>
+        <li>Ask in Claude Code. Explanations that need equations or figures are written to this site, and the terminal reply gives the link and a short summary.</li>
+        <li>For questions about a page or section, you can <a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">open an issue</a> on GitHub, naming the page and section. When asked in Claude Code to check the website feedback, Claude reads the issues, replies in them, and writes any required changes into the pages.</li>
+        <li>Every update maintains the Chinese and English versions together and appends an entry below.</li>
+      </ol>
+    </section>
+
+    <section id="log" aria-labelledby="log-title">
+      <h2 id="log-title">Log</h2>
+      <p class="muted">Newest first.</p>
+      <ol class="log-entries" reversed>
+        <li id="q-2026-09-23-site">
+          <p class="muted">2026-09-23 · Established</p>
+          <p><strong>Question</strong>: Following the Codex workflow, create an equivalent GitHub repository and a website with the same structure to store this project's content and to interact with me.</p>
+          <p><strong>Answer</strong>: <a href="https://github.com/rjguo1208/claude-Holstein-model">GitHub repository</a> and this site.</p>
+        </li>
+        <li id="q-2026-09-23-model">
+          <p class="muted">2026-09-23 · Theoretical reasoning; not yet implemented or numerically validated</p>
+          <p><strong>Question</strong>: If I care more about how an isolated defect changes the local electronic states, the phonon states and the electron–phonon coupling, what simple model should I build? Defect excited states are not considered, i.e. no Huang–Rhys model; no real materials; think only, do not implement yet.</p>
+          <p><strong>Answer</strong>: <a href="index.html">Theory notes</a>.</p>
+        </li>
+      </ol>
+    </section>
+
+    <footer>
+      <p>Research notes on an isolated defect and the Holstein model (maintained by Claude) · <a href="https://github.com/rjguo1208/claude-Holstein-model">Source files for the pages and figures</a> · <a href="https://github.com/rjguo1208/claude-Holstein-model/issues/new/choose">Questions or feedback</a></p>
+    </footer>
+  </main>
+</body>
+</html>

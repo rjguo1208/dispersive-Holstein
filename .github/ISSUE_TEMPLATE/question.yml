@@ -1,0 +1,20 @@
+name: 问题或反馈 / Question or feedback
+description: 对网站某页或某节提问或反馈 / Ask about or comment on a page or section
+title: "[问题 / Question] "
+labels: ["question"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: 页面与小节 / Page and section
+      description: 例如“理论笔记 4.2”，或粘贴页面链接 / For example "Theory notes 4.2", or paste the page link
+      placeholder: https://rjguo1208.github.io/claude-Holstein-model/#knobs
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: 问题或意见 / Question or comment
+      description: 可以使用 Markdown 和 LaTeX（$...$） / Markdown and LaTeX ($...$) are supported
+    validations:
+      required: true
