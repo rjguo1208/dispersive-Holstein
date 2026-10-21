@@ -47,6 +47,10 @@ The user requires Chinese and English versions to be updated together.
 - Figures are standalone LaTeX/TikZ files in `site/figures/*.tex`.
   `npm run figures` (Tectonic + Poppler `pdftocairo`) writes the PDF and an SVG
   stamped with the source hash; `npm run check` rejects stale figures.
+- Result plots are matplotlib SVG + PDF files in `site/results/`, drawn by
+  `scripts/plot_results.py` from the data files in `site/data/`. `npm run check`
+  requires a viewBox, no raster images and a matching PDF. Rerun the script after
+  changing the data; the build does not regenerate the plots.
 - Run `npm run build` and `npm run check`, and commit the regenerated `site/`
   pages and assets together with the source changes.
 - Check language switching and navigation on desktop and mobile, including the

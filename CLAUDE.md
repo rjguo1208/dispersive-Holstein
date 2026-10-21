@@ -15,4 +15,7 @@
   For the live site use `--timeout=60000` instead (no `#fragment`): virtual time runs out before
   the network requests finish, and `--timeout` stops loading when it expires, so a short value
   cancels the font downloads and the formulas come out blank.
+- Result plots: `OMP_NUM_THREADS=1 /apps/anvil/external/apps/anaconda/2025.12/bin/python scripts/plot_results.py`
+  (matplotlib; the system `python3` has none). The moiré-page data in `site/data/` are exported by
+  `~/ideas/moire_polaron_eval/export_site_data.py` from the local calculation outputs.
 - Working files go in `$SCRATCH/claude-work/`, not `/tmp`.

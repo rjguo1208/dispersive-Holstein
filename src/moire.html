@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="对一份 moiré 电声耦合与极化子推导笔记的核对，以及 MoSe₂/WSe₂ 层间激子极化子和扭转 hBN 激子自陷的 go/no-go 估计：方法、DFT 数值、图与当前状态。">
+  <meta name="theme-color" content="#ffffff">
+  <title>Moiré 极化子：笔记评估与 go/no-go 估计</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <nav class="site-nav" aria-label="站点页面目录">
+    <strong>页面目录</strong>
+    <ul>
+      <li><a href="index.html">理论笔记</a></li>
+      <li><a href="plan.html">项目计划</a></li>
+      <li><a href="moire.html" aria-current="page">Moiré 极化子评估</a></li>
+      <li><a href="log.html">讨论记录</a></li>
+    </ul>
+  </nav>
+  <main id="content">
+    <header>
+      <p><a href="log.html">返回讨论记录</a></p>
+      <h1>Moiré 极化子<br>笔记评估与 go/no-go 估计</h1>
+      <p>核对一份 moiré 电声耦合与极化子的推导笔记，然后做两项可行性估计：MoSe₂/WSe₂ 中的层间激子极化子，以及扭转 hBN 界面的激子自陷。</p>
+      <p class="muted">2026-10-21。本页与孤立缺陷项目无关。推导的核对与 MoSe₂/WSe₂ 的估计已完成；扭转 hBN 只有初步结果，6×6 超胞与 HSE 计算仍在排队，结论可能改变。所有数值来自 PBE（+D3）计算与简化模型，未经独立复核，只用于判断方向，不是定量预言。</p>
+    </header>
+
+    <nav aria-label="文章目录">
+      <strong>目录</strong>
+      <ol>
+        <li><a href="#summary">结论</a></li>
+        <li><a href="#review">推导笔记的核对</a></li>
+        <li><a href="#excitons">为什么转向激子</a></li>
+        <li><a href="#tmd">MoSe₂/WSe₂ 层间激子</a></li>
+        <li><a href="#hbn">扭转 hBN：初步结果</a></li>
+        <li><a href="#next">下一步</a></li>
+        <li><a href="#data">数据</a></li>
+        <li><a href="#references">参考文献</a></li>
+      </ol>
+    </nav>
+
+    <section id="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">1. 结论</h2>
+      <ol>
+        <li><strong>推导的代数正确。</strong>主要公式都逐式核对过，其中三组在一维 toy moiré 链上做了数值验证，与直接计算一致到机器精度。需要修正的是两处物理陈述，不是代数。</li>
+        <li><strong>作为方法，moiré 电声顶点已经不新。</strong>2026 年已有多组用第一性原理计算 moiré 电声耦合。仍然空着的是物理问题本身：moiré 尺度的自陷极化子是否存在，由哪个通道驱动。</li>
+        <li><strong>激子比单个载流子更有希望。</strong>激子质心更重，moiré 带更平。在同样的势深下，达到 \(\lambda_M=1\) 所需的接触型耦合低 4–1000 倍。</li>
+        <li><strong>MoSe₂/WSe₂ 层间激子：有条件 GO。</strong>耦合几乎全部来自软的面内声学模和弯曲模，总 Huang–Rhys 因子约 1–3，与实验拟合的 1.6–3.1 同一量级；光学模和层间呼吸模可以忽略。由极化子造成的 moiré 尺度“自陷”只出现在 R 堆垛 2°–2.5° 的窄窗口。</li>
+        <li><strong>扭转 hBN：线性耦合 NO-GO，非线性待定。</strong>六种堆垛的线性接触耦合都不足以自陷，同核 B/B、N/N 接触的堆垛耦合最强。3×3 超胞中的 ΔSCF 三重态弛豫 0.09–0.23 eV，但畸变遍及整个超胞，自旋也不局域：这是周期性响应，不是局域的自陷激子。Stokes 位移 0.3–0.55 eV，远小于实验中约 2 eV 的红移。是否存在小尺度的深自陷态，要等更大超胞与杂化泛函的结果。</li>
+      </ol>
+    </section>
+
+    <section id="review" aria-labelledby="review-title">
+      <h2 id="review-title">2. 推导笔记的核对</h2>
+      <p>被评估的是一份未发表的推导笔记（2026-10-20 版）。它分三步：用 pristine 原胞的响应构造 moiré 电声顶点（pristine 响应近似，PRA）；在 moiré 基中写出 Sio–Giustino 极化子方程；再约化为 moiré 尺度的 Holstein 模型。目标体系是 WSe₂/WS₂，要解释 Arsenault 等报道的 moiré 极化子电子晶体<a href="#ref-arsenault">[1]</a>。</p>
+
+      <h3>2.1 数值验证</h3>
+      <p>一维 toy moiré 链：每个 moiré 原胞含 4 个 pristine 原胞，共 6 个 moiré 原胞；跳跃与在位能受 moiré 调制；电声耦合包括 SSH 型与应变型；电子态与声子取随机的相位规范。三组检查的结果：</p>
+      <ul>
+        <li>moiré 顶点的 PRA 主公式：60 个随机矩阵元与直接计算的偏差为 \(5\times10^{-15}\)。</li>
+        <li>moiré 基中的 Sio–Giustino 方程：与实空间 Landau–Pekar 极小化相比，能量差小于 \(10^{-10}\)，畸变差 \(2\times10^{-11}\)。</li>
+        <li>moiré Wannier 基中的有效相互作用核：模求和与实空间结果一致到 \(7\times10^{-15}\)。</li>
+      </ul>
+      <p>toy 模型中 PRA 按构造是精确的，所以这些检查只验证代数与约定，不验证 PRA 本身。</p>
+
+      <h3>2.2 修正一：声学型通道在 \(q\to0\) 处非解析</h3>
+      <p>对形变势型（声学、应变）耦合，\(q=0\) 的整体平移不耦合，但 \(|g(q)|^2/\Omega(q)\) 在 \(q\to0\) 时趋于有限常数。于是格点间的有效相互作用满足求和规则：</p>
+      \[
+        U^0(\mathbf R-\mathbf R')=\frac{D^2}{Mc^2}\Big(\delta_{\mathbf R\mathbf R'}-\frac{1}{N_p}\Big),\qquad
+        \sum_{\mathbf R'}U^0(\mathbf R-\mathbf R')=0 .
+      \]
+      <p>其中 \(D\) 是形变势，\(M\) 是每个原胞的质量，\(c\) 是声速，\(N_p\) 是原胞数。每一对格点的修正 \(1/N_p\) 都可以忽略，但它们的总和恰好抵消对角项。因此固定原胞的周期性弛豫完全测不到声学通道对孤立极化子的贡献。toy 模型中 \(U_{00}=3.90\)，而 \(\sum_jU_{0j}=0.59\)：周期性弛豫只得到孤立极化子 \(E_p=U_{00}/2\) 的 15%。用周期性 DFT 的数字（例如 Arsenault 等的 16 meV）推断孤立极化子时，这一项必须单独处理。</p>
+
+      <h3>2.3 修正二：moiré 增强只在深势下成立</h3>
+      <p>笔记用 \(\lambda_M=2E_p^M/W_M\) 与 \(E_p^M\approx E_p^0/N_W\) 论证 moiré 更容易自陷：</p>
+      \[
+        \frac{\lambda_M}{\lambda_0}=\frac{W_0}{N_W\,W_M}\;\propto\;e^{\mathcal S}.
+      \]
+      <p>这在渐近意义上正确，但前因子中的 Wannier 参与数 \(N_W\)（以 pristine 原胞计）是 \(10^2\)–\(10^3\) 量级。下表是三角连续模型的结果，取周期 8 nm、\(m^*=0.45\)、\(W_0=\hbar^2/m^*a^2=1.57\) eV：</p>
+      <div class="table-scroll">
+        <table>
+          <caption>三角连续模型中最低 moiré 带的宽度、Wannier 参与数与耦合比</caption>
+          <thead><tr><th scope="col">势深 \(V\) (meV)</th><th scope="col">\(W_M\) (meV)</th><th scope="col">\(N_W\)</th><th scope="col">\(\lambda_M/\lambda_0\)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">5</th><td>14.0</td><td>444</td><td>0.25</td></tr>
+            <tr><th scope="row">8</th><td>9.7</td><td>312</td><td>0.52</td></tr>
+            <tr><th scope="row">12</th><td>5.7</td><td>227</td><td>1.2</td></tr>
+            <tr><th scope="row">20</th><td>2.0</td><td>157</td><td>5.1</td></tr>
+            <tr><th scope="row">30</th><td>0.6</td><td>121</td><td>23</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>只有 \(W_M\lesssim6\) meV 时 moiré 才有利。若 moiré 带宽为 10–15 meV，自陷阈值最多降低 1.7–3.5 倍。若取笔记对 WSe₂/WS₂ 的估计 \(t_M\approx1\)–\(5\) meV，则 \(\lambda_M/\lambda_0\lesssim0.5\)，moiré 反而更难自陷。</p>
+
+      <h3>2.4 其他意见</h3>
+      <ul>
+        <li>对 WSe₂/WS₂，PBE 给出的畸变约 90% 在面外。如果主要是层整体的位移，它与带边的耦合只能来自双层（层间）通道，而这恰好不在单层的 PRA 主公式里。</li>
+        <li>多数 moiré 声子满足 \(\hbar\omega\gtrsim t_M\)。在弱、中耦合的反绝热区，绝热的 Sio–Giustino 方程给不出极化子位移。有用的产出是顶点和 moiré 尺度的 Hubbard–Holstein 参数，再交给非绝热方法求解。</li>
+        <li>求极化子基态时，在含几个 moiré 原胞的超胞里做实空间 Landau–Pekar 自洽，比在 moiré 布洛赫基中求出全部顶点简单得多。</li>
+      </ul>
+
+      <h3>2.5 竞争</h3>
+      <p>2026 年已出现的相关工作：</p>
+      <ul>
+        <li>Abramovitch 与 Bernardi：由第一性原理拟合原子尺度的电声势，计算扭转双层石墨烯到 1.6° 的 moiré 电声耦合与输运<a href="#ref-abramovitch">[2]</a>。</li>
+        <li>Mao 等：moiré 半导体中层间呼吸模的干涉增强电声耦合<a href="#ref-mao">[3]</a>。</li>
+        <li>Uzundal 等：WS₂/WSe₂ 中的 moiré 声子与层选择性的激子–声子耦合<a href="#ref-uzundal">[4]</a>。</li>
+        <li>Ramos-Alonso 与 Ochoa：扭转双层石墨烯中带电的 moiré 声子<a href="#ref-ramos">[5]</a>。</li>
+        <li>Del Grande 与 Strubbe：小角扭转双层 WSe₂ 光致结构变化的多尺度计算<a href="#ref-delgrande">[6]</a>。</li>
+      </ul>
+      <p>没有检索到 moiré 尺度自陷极化子的第一性原理计算。</p>
+    </section>
+
+    <section id="excitons" aria-labelledby="excitons-title">
+      <h2 id="excitons-title">3. 为什么转向激子</h2>
+      <p>评估的第一稿只讨论了单个电子或空穴的自陷。激子有三个有利之处：</p>
+      <ul>
+        <li><strong>质心更重，moiré 带更平。</strong>把点激子的质心质量取为 \(M=m_e+m_h\)，在同样的连续模型中，激子的 moiré 带比空穴窄 3–600 倍，\(\lambda_M=1\) 所需的接触型耦合 \(E_p^0\) 低 4–1000 倍（图 1）。例如势深 10 meV 时，空穴需要约 1 eV，激子只需 0.03–0.13 eV。</li>
+        <li><strong>层间激子的耦合不相互抵消。</strong>电子与空穴分处两层，层内特有的模不会相消；层间距同时改变带阶与结合能。跨层的电子–空穴吸引本身也会使两层局部弯曲靠近<a href="#ref-iakovlev">[7]</a>。</li>
+        <li><strong>可以与光谱直接比较。</strong>多数晶格模处于反绝热区（\(\hbar\omega\gg t_X\)），可观测量是各模的 Huang–Rhys 因子、声子边带与 Stokes 位移：
+          \[
+            S_\nu=\frac{E_{p,\nu}}{\hbar\omega_\nu},\qquad \Delta_{\mathrm{Stokes}}=2\sum_\nu S_\nu\,\hbar\omega_\nu .
+          \]
+        </li>
+      </ul>
+      <figure>
+        <div class="figure-scroll"><img src="results/moire-mass-scaling.svg" width="243" height="180" alt="对数纵轴的折线图：横轴为 moiré 势深 V，从 0 到 50 meV；纵轴为 λ_M 等于 1 所需的接触型耦合，从 10 的负 5 次方到 10 eV。空穴（质量 0.45）的曲线从 5 meV 处约 3 eV 降到 50 meV 处约 0.003 eV；激子质心（质量 0.8 和 1.1）的两条曲线低一到三个数量级，下降更快。0.06 到 0.2 eV 之间的灰带标为层内形变势耦合的典型量级。"></div>
+        <figcaption>图 1　三角连续模型（周期 8 nm）中，最低 moiré 带达到 \(\lambda_M=1\) 所需的接触型耦合 \(E_p^0\) 与势深 \(V\) 的关系。黑：空穴（\(m^*=0.45\)）；蓝、橙：点激子的质心（\(M=0.8\)、\(1.1\)）。灰带是层内形变势耦合的典型量级（估计）。图中只含质量效应；激子内部结构会抹平短周期的势，削弱但不抵消这一优势。</figcaption>
+        <p class="figure-links"><a href="results/moire-mass-scaling.svg">SVG</a><a href="results/moire-mass-scaling.pdf">PDF</a><a href="data/moire-mass-scaling.csv">数据（CSV）</a></p>
+      </figure>
+    </section>
+
+    <section id="tmd" aria-labelledby="tmd-title">
+      <h2 id="tmd-title">4. MoSe₂/WSe₂ 层间激子</h2>
+      <p>选这个体系有两个原因：晶格失配只有约 0.2%，可以在 1×1 双层原胞中计算各个堆垛；并且有声子边带与 Huang–Rhys 因子的实验数据<a href="#ref-soubelet">[8]</a>。</p>
+
+      <h3>4.1 方法</h3>
+      <ul>
+        <li><strong>DFT：</strong>Quantum ESPRESSO 7.3，PBE+D3(BJ)，SG15 模守恒赝势，70 Ry，12×12 k 网格，二维库仑截断，面内晶格常数统一取 3.285 Å。</li>
+        <li><strong>单层：</strong>A₁′ 冻结声子；±1% 的双轴与单轴应变，以真空能级对齐求绝对形变势与 \(C_{11}\)；K 点含自旋轨道耦合的有效质量。</li>
+        <li><strong>双层：</strong>R 与 H 各三个高对称堆垛，弛豫 z 坐标；把上层刚性平移 ±0.05 与 ±0.10 Å，得到 K 点能隙对层间距的导数与层间刚度。价带顶在 WSe₂，导带底在 MoSe₂，即 II 型能带排列。</li>
+        <li><strong>激子模型：</strong>层间激子（IX）的结合能用双层 Keldysh 模型计算（\(r_0=4\) nm，\(\varepsilon=4.5\)），约 78–80 meV。质心的 moiré 势取三个堆垛的 \(E_{\mathrm{IX}}=E_{\mathrm{gap}}(K)-E_b(d)\)，拟合到第一壳层，并用激子内部的形状因子抹平。</li>
+        <li><strong>耦合：</strong>层间呼吸（LB）与 A₁′ 按接触型静态响应计算；面内声学（LA）用二维色散积分，取两层相对滑移与两层黏合两种极限；弯曲模只取黏合极限，作为上界。</li>
+      </ul>
+
+      <h3>4.2 DFT 结果</h3>
+      <div class="table-scroll">
+        <table>
+          <caption>单层参数（PBE；能隙与形变势相对真空能级）</caption>
+          <thead><tr><th scope="col">量</th><th scope="col">MoSe₂</th><th scope="col">WSe₂</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">K 点能隙，无 / 有自旋轨道耦合 (eV)</th><td>1.551 / 1.444</td><td>1.673 / 1.391</td></tr>
+            <tr><th scope="row">\(\hbar\omega_{A_1'}\) (meV)</th><td>29.5</td><td>30.3</td></tr>
+            <tr><th scope="row">绝对形变势 \(\Xi_c,\ \Xi_v\) (eV)</th><td>−7.55, −2.40</td><td>−8.74, −2.06</td></tr>
+            <tr><th scope="row">\(C_{11},\ C_{12}\) (N/m)</th><td>116, 24</td><td>127, 22</td></tr>
+            <tr><th scope="row">K 点有效质量 \(m_c,\ m_v\) (\(m_e\))</th><td>0.52, 0.60</td><td>0.42, 0.37</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <caption>双层堆垛（PBE，无自旋轨道耦合）</caption>
+          <thead><tr><th scope="col">堆垛</th><th scope="col">金属间距 (Å)</th><th scope="col">K 点能隙 (eV)</th><th scope="col">\(\partial E_{\mathrm{gap}}/\partial z\) (meV/Å)</th><th scope="col">\(K_z\) (eV/Å²)</th><th scope="col">相对能量 (meV/胞)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">R AA</th><td>7.05</td><td>1.342</td><td>−41</td><td>0.42</td><td>+92</td></tr>
+            <tr><th scope="row">R AB</th><td>6.43</td><td>1.299</td><td>+78</td><td>0.48</td><td>+1</td></tr>
+            <tr><th scope="row">R BA</th><td>6.43</td><td>1.427</td><td>−176</td><td>0.48</td><td>0</td></tr>
+            <tr><th scope="row">H AA</th><td>6.53</td><td>1.357</td><td>−35</td><td>0.40</td><td>+28</td></tr>
+            <tr><th scope="row">H AB</th><td>6.44</td><td>1.359</td><td>−41</td><td>0.53</td><td>0</td></tr>
+            <tr><th scope="row">H BA</th><td>7.01</td><td>1.344</td><td>−46</td><td>0.42</td><td>+91</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>扣除结合能后，层间激子的 moiré 势在 R 堆垛中深约 128 meV（AB 处最低），在 H 堆垛中只有约 14 meV（BA 处最低）。层间呼吸模 \(\hbar\omega_{\mathrm{LB}}=3.5\)–\(3.7\) meV。\(\partial E_{\mathrm{gap}}/\partial z\) 在不同堆垛之间变号，所以 LB 通道取激子所在堆垛的值。</p>
+
+      <h3>4.3 moiré 带宽与扭角</h3>
+      <figure>
+        <div class="figure-scroll"><img src="results/tmd-ix-twist.svg" width="243" height="187" alt="对数纵轴的折线图：横轴为有效扭角，从 1 到 4.5 度；纵轴为能量，从 10 的负 4 次方到 100 meV。R 堆垛的激子带宽从 1 度处约 0.0005 meV 迅速升到 4.5 度处约 38 meV；H 堆垛的带宽从约 0.4 meV 升到约 42 meV。两条阴影带表示极化子能量的范围，约 0.2 到 2 meV，几乎不随扭角变化。R 堆垛的带宽曲线在约 2 度处穿过极化子能量带。3 度和 4.5 度处的竖线标出 3R 与 2H 样品。"></div>
+        <figcaption>图 2　层间激子质心最低 moiré 带的宽度 \(W_X\)（线）与极化子能量 \(E_p\) 的范围（阴影）随有效扭角的变化。阴影的下限为黏合极限的 LA，上限为滑移极限的 LA 加弯曲模上界，二者都含 LB 与 A₁′。蓝：R 堆垛；橙：H 堆垛。竖线为 Soubelet 等两块样品的有效扭角。</figcaption>
+        <p class="figure-links"><a href="results/tmd-ix-twist.svg">SVG</a><a href="results/tmd-ix-twist.pdf">PDF</a><a href="data/tmd-ix-twist-scan.csv">数据（CSV）</a></p>
+      </figure>
+      <div class="table-scroll">
+        <table>
+          <caption>moiré 带宽 \(W_X\) 与 \(\lambda_X=2E_p/W_X\)（\(E_p\) 取 LB、A₁′ 与滑移极限 LA 之和）</caption>
+          <thead><tr><th scope="col">\(\theta_{\mathrm{eff}}\)</th><th scope="col">\(a_M\) (nm)</th><th scope="col">R：\(W_X\) (meV)</th><th scope="col">R：\(\lambda_X\)</th><th scope="col">H：\(W_X\) (meV)</th><th scope="col">H：\(\lambda_X\)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1.0°</th><td>18.8</td><td>\(5\times10^{-4}\)</td><td>\(\gg1\)</td><td>0.42</td><td>2.3</td></tr>
+            <tr><th scope="row">2.0°</th><td>9.4</td><td>1.3</td><td>2.5</td><td>6.6</td><td>0.18</td></tr>
+            <tr><th scope="row">3.0°</th><td>6.3</td><td>11</td><td>0.27</td><td>18</td><td>0.10</td></tr>
+            <tr><th scope="row">4.5°</th><td>4.2</td><td>38</td><td>0.09</td><td>42</td><td>0.07</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>电子与空穴密度的最小尺度受激子内部结构（半径约 3 nm）限制，所以 \(E_p\) 几乎不随扭角变化（R 堆垛约 1.3–1.7 meV），随扭角变化的主要是 \(W_X\)。</li>
+        <li>扭角 \(\lesssim1.5^\circ\) 时激子本来就被 moiré 势陷住，不是“自”陷；扭角 \(\gtrsim3^\circ\) 时激子离域。只有 R 堆垛 2°–2.5° 是由极化子把可动的激子带压窄乃至局域化的窗口。H 堆垛的势浅，只有有效扭角 \(\lesssim1^\circ\) 才陷住。</li>
+        <li>这个窗口里声子能量大于跳跃能量（反绝热），效果是带宽压缩 \(e^{-S}\)（\(S\sim1\)），不是绝热自陷。</li>
+      </ul>
+
+      <h3>4.4 各通道的耦合与实验</h3>
+      <p>Soubelet 等在 hBN 封装的 MoSe₂/WSe₂ 中观测到间距约 0.8 meV 的等间距发光峰，归因于层间激子极化子，并拟合出 Huang–Rhys 因子：3R 样品 \(3.1\pm0.4\)，2H 样品 \(1.6\pm0.2\)<a href="#ref-soubelet">[8]</a>。按该文的角度约定，2H 样品 θ ≈ 4.5°，3R 样品 θ ≈ 57°，即分别偏离 H 与 R 堆垛 4.5° 和 3°。下面按这两个有效扭角比较。</p>
+      <figure>
+        <div class="figure-scroll"><img src="results/tmd-ix-huang-rhys.svg" width="243" height="180" alt="对数纵轴的柱状图：五个通道各有两根柱，分别对应 3R 样品（有效扭角 3 度）与 2H 样品（4.5 度）。层间呼吸模约 0.001 到 0.004，A1 撇模约 0.013，黏合极限的面内声学模约 0.2，滑移极限的面内声学模约 0.8 到 0.9，弯曲模上界约 1.8 到 2.3。两条水平阴影带标出实验值：3R 约 3.1，2H 约 1.6。"></div>
+        <figcaption>图 3　两块样品有效扭角下各通道的 Huang–Rhys 因子（对数坐标）。实心：R 堆垛 3°；斜线：H 堆垛 4.5°。阴影带为 Soubelet 等的实验值。弯曲模为黏合极限的上界。</figcaption>
+        <p class="figure-links"><a href="results/tmd-ix-huang-rhys.svg">SVG</a><a href="results/tmd-ix-huang-rhys.pdf">PDF</a><a href="data/tmd-ix-twist-scan.csv">数据（CSV）</a></p>
+      </figure>
+      <div class="table-scroll">
+        <table>
+          <caption>各通道的极化子能量与 Huang–Rhys 因子</caption>
+          <thead><tr><th scope="col">通道</th><th scope="col">R 3°：\(E_p\) (meV)</th><th scope="col">R 3°：\(S\)</th><th scope="col">H 4.5°：\(E_p\) (meV)</th><th scope="col">H 4.5°：\(S\)</th><th scope="col">特征声子能量</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">层间呼吸（LB）</th><td>0.015</td><td>0.0041</td><td>0.0045</td><td>0.0013</td><td>3.6 meV，分立</td></tr>
+            <tr><th scope="row">A₁′</th><td>0.41</td><td>0.014</td><td>0.40</td><td>0.013</td><td>30 meV，分立</td></tr>
+            <tr><th scope="row">LA，两层滑移</th><td>1.09</td><td>0.88</td><td>1.06</td><td>0.80</td><td>1–2 meV，连续</td></tr>
+            <tr><th scope="row">LA，两层黏合</th><td>0.29</td><td>0.23</td><td>0.28</td><td>0.21</td><td>1–2 meV，连续</td></tr>
+            <tr><th scope="row">弯曲，黏合极限（上界）</th><td>0.65</td><td>1.8</td><td>0.63</td><td>2.3</td><td>0.1–0.4 meV，红外敏感</td></tr>
+            <tr><th scope="row">实验</th><td>—</td><td>3.1 ± 0.4</td><td>—</td><td>1.6 ± 0.2</td><td>约 0.8 meV，等间距分立峰</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>两层滑移时 LA 强而弯曲通道消失；两层黏合时 LA 弱（电子与空穴的形变势同号而部分抵消，模量加倍），弯曲通道打开。两种极限下软模的总 \(S\) 都约为 1–3，与实验同一量级。</li>
+        <li>分立的 0.8 meV 峰需要一支窄的模，例如 moiré 折叠后在小布里渊区边界变平的声学或弯曲支。本估计用的是 pristine 色散，只能给出耦合强度的量级，不能给出峰位。</li>
+        <li>估计的 R/H 之比在滑移极限约为 1.1，在黏合极限约为 0.8，都没有复现实验中约 1.9 的比例。</li>
+        <li>Stokes 位移约 3 meV，计入弯曲模上界约 4 meV。</li>
+      </ul>
+
+      <h3>4.5 判定</h3>
+      <p><strong>有条件 GO。</strong>激子方向值得继续，但目标应改为 moiré 软声子（折叠声学支、弯曲、层间剪切与 phason）对 moiré 束缚层间激子的缀饰，以及小扭角窗口中的极化子带宽压缩与输运。由光学模或层间呼吸模驱动的 moiré 自陷在这个体系中不成立。最大的不确定性是层间力学：两层是黏合还是滑移、晶格重构以及 hBN 封装。它们决定 LA 与弯曲通道之间的分配，也决定边带的能量。Knorr 等的模型预测了 moiré 激子的极化子带平化，可作对照<a href="#ref-knorr">[9]</a>。</p>
+    </section>
+
+    <section id="hbn" aria-labelledby="hbn-title">
+      <h2 id="hbn-title">5. 扭转 hBN：初步结果</h2>
+      <p>两点动机。第一，单层与体相 hBN 中的空穴极化子已有第一性原理理论<a href="#ref-sio">[10]</a>。第二，Roux 等在大扭角的扭转 hBN 中观测到峰值约 4 eV、宽约 2 eV 的发光，比 6.25 eV 的带隙低约 2 eV，并把它归因于界面处的激子自陷；大扭角时，界面上同核的 B–B 与 N–N 接触密集分布<a href="#ref-roux">[11]</a>。要回答的问题是：界面堆垛能否让激子自陷，自陷又能否解释约 2 eV 的红移？</p>
+
+      <h3>5.1 方法</h3>
+      <ul>
+        <li><strong>DFT：</strong>Quantum ESPRESSO 7.3，PBE+D3(BJ)，PseudoDojo 模守恒赝势，80 Ry，面内晶格常数 2.504 Å，二维库仑截断。</li>
+        <li><strong>单层与双层：</strong>单层的 K 点能隙、形变势、\(C_{11}\) 与有效质量；六种 1×1 双层堆垛（平行的 AA、AB、BA，反平行的 AA′、A′B、AB′），弛豫层间距，再刚性平移上层得到 \(\partial E_{\mathrm{gap}}/\partial z\) 与层间刚度 \(K_z\)。</li>
+        <li><strong>线性判据：</strong>二维接触模型。激子质心取高斯态 \(\psi\propto e^{-r^2/2\ell^2}\)，耦合按激子内部尺度 \(\sigma\) 抹平：
+          \[
+            E(\ell)=\frac{\hbar^2}{2M\ell^2}-\frac{E_p^0A_{\mathrm{cell}}}{2\pi(\ell^2+2\sigma^2)},\qquad
+            g=\frac{E_p^0A_{\mathrm{cell}}M}{\pi\hbar^2}.
+          \]
+          \(\sigma\to0\) 时 \(g\gt1\) 是坍缩（自陷）条件；\(g\lt1\) 时能量在 \(\ell\to\infty\) 处最低，激子保持自由。\(E_p^0\) 是激子完全局域在一个原胞时 LA 与 LB 两个通道的结合能之和。</li>
+        <li><strong>非线性 ΔSCF：</strong>在 3×3 双层超胞（36 个原子，Γ 点，包含原胞的 K 点）中计算三重态（总磁矩 2，小的高斯展宽）。把界面上一对上下相对的原子各向对方移动 0.35 Å（强种子 0.75 Å），从这一种子畸变出发弛豫。由四个能量得到
+          \[
+            \Delta E_T=E_T(\mathbf u^*)-E_T(0),\qquad
+            E_{\mathrm{abs}}=E_T(0)-E_0(0),\qquad
+            E_{\mathrm{em}}=E_T(\mathbf u^*)-E_0(\mathbf u^*),
+          \]
+          其中 \(0\) 表示平整的基态结构，\(\mathbf u^*\) 表示三重态弛豫后的结构，Stokes 位移为 \(E_{\mathrm{abs}}-E_{\mathrm{em}}\)。另做一个单层对照。</li>
+      </ul>
+
+      <h3>5.2 线性判据</h3>
+      <p>单层 hBN（PBE）的 K 点能隙为 4.71 eV，\(m_c=0.96\)，\(m_v=0.65\)，于是 \(M=1.61\)，\(\mu=0.39\)。二维氢模型给出结合能 0.9–1.5 eV、1s 半径 2.6–3.4 Å（\(\varepsilon=4.9\)–\(3.8\)）。面内 LA 的接触耦合 \(E_p^0=0.077\) eV，对所有堆垛相同。</p>
+      <figure>
+        <div class="figure-scroll"><img src="results/hbn-linear.svg" width="243" height="166" alt="水平柱状图：六种堆垛的二维自陷参数 g，从大到小为 AA 约 0.66、A 撇 B 约 0.44、AB 撇约 0.15、BA 与 AB 约 0.10、AA 撇约 0.05。每根柱分为灰色的面内声学部分（约 0.03，各堆垛相同）和蓝色的层间呼吸部分。g 等于 1 处的竖虚线标为自陷阈值，所有柱都在它左侧。"></div>
+        <figcaption>图 4　六种堆垛的二维自陷参数 \(g\)，分为面内 LA（灰）与层间呼吸 LB（蓝）两部分。括号中是界面上正对的原子。\(g\gt1\) 才能自陷。</figcaption>
+        <p class="figure-links"><a href="results/hbn-linear.svg">SVG</a><a href="results/hbn-linear.pdf">PDF</a><a href="data/hbn-stackings.csv">数据（CSV）</a></p>
+      </figure>
+      <div class="table-scroll">
+        <table>
+          <caption>hBN 双层堆垛（PBE+D3，1×1 原胞）</caption>
+          <thead><tr><th scope="col">堆垛</th><th scope="col">正对的原子</th><th scope="col">层间距 (Å)</th><th scope="col">相对能量 (meV/胞)</th><th scope="col">K 点能隙 (eV)</th><th scope="col">\(\partial E_{\mathrm{gap}}/\partial z\) (eV/Å)</th><th scope="col">\(K_z\) (eV/Å²)</th><th scope="col">\(\hbar\omega_{\mathrm{LB}}\) (meV)</th><th scope="col">\(g\)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">AA</th><td>B/B，N/N</td><td>3.62</td><td>20.6</td><td>4.19</td><td>0.86</td><td>0.21</td><td>8.5</td><td>0.66</td></tr>
+            <tr><th scope="row">A′B</th><td>B/B</td><td>3.38</td><td>3.6</td><td>4.19</td><td>0.76</td><td>0.26</td><td>9.3</td><td>0.44</td></tr>
+            <tr><th scope="row">AB′</th><td>N/N</td><td>3.59</td><td>18.6</td><td>4.52</td><td>0.38</td><td>0.22</td><td>8.6</td><td>0.15</td></tr>
+            <tr><th scope="row">AB</th><td>B/N</td><td>3.33</td><td>0</td><td>4.57</td><td>0.34</td><td>0.28</td><td>9.8</td><td>0.10</td></tr>
+            <tr><th scope="row">BA</th><td>N/B</td><td>3.33</td><td>0</td><td>4.57</td><td>0.34</td><td>0.28</td><td>9.8</td><td>0.10</td></tr>
+            <tr><th scope="row">AA′</th><td>B/N，N/B</td><td>3.33</td><td>0.7</td><td>4.76</td><td>−0.19</td><td>0.30</td><td>10.0</td><td>0.05</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>所有堆垛都有 \(g\lt1\)：线性接触耦合不足以让激子自陷。</li>
+        <li>同核接触（B/B、N/N）的堆垛耦合最强：能隙对层间距更敏感，层间刚度更小。含 B/B 接触的 AA 与 A′B 堆垛，层间呼吸通道的 \(E_p^0\) 比天然的 AA′ 堆垛大 19–29 倍；只含 N/N 接触的 AB′ 大约 5 倍。这与 Roux 等观测到的趋势定性一致：扭角越大，界面上同核接触越密集，4 eV 发光越强。</li>
+        <li>线性部分没有包含极性光学声子（Fröhlich）通道。对中性激子，电子与空穴的长程耦合大部分相消，预计是小量，但没有计算。</li>
+      </ul>
+
+      <h3>5.3 ΔSCF 三重态（3×3 超胞）</h3>
+      <figure>
+        <div class="figure-scroll"><img src="results/hbn-triplet.svg" width="243" height="281" alt="上下两幅柱状图，横轴为四种堆垛 AA、A 撇 B、AA 撇和 AB 撇（标为已滑移，画斜线）。上图为能量：三重态弛豫能约 0.23、0.09、0.10、0.51 eV，Stokes 位移约 0.55、0.30、0.34、0.68 eV；1.75 到 2.25 eV 的阴影带标出 Roux 等观测到的红移，所有柱都远低于它。下图为层间距的变化：AA 的超胞平均约减小 0.36 埃、种子原子对处约减小 0.44 埃；A 撇 B 分别为 0.16 和 0.25 埃；AA 撇的层间距反而增大约 0.11 和 0.05 埃。"></div>
+        <figcaption>图 5　3×3 双层超胞中的 ΔSCF 三重态。(a) 三重态弛豫能 \(-\Delta E_T\) 与 Stokes 位移；阴影带为 Roux 等观测到的红移。(b) 层间距的变化：整个超胞的平均值与种子原子对处的值。AB′（斜线）在弛豫中整体滑移，不计入结论。</figcaption>
+        <p class="figure-links"><a href="results/hbn-triplet.svg">SVG</a><a href="results/hbn-triplet.pdf">PDF</a><a href="data/hbn-triplet-3x3.csv">数据（CSV）</a></p>
+      </figure>
+      <div class="table-scroll">
+        <table>
+          <caption>3×3 超胞中的三重态弛豫（自旋参与比：1 表示均匀分布在 36 个原子上，1/36 表示只在一个原子上）</caption>
+          <thead><tr><th scope="col">堆垛</th><th scope="col">\(\Delta E_T\) (eV)</th><th scope="col">Stokes 位移 (eV)</th><th scope="col">平均 \(\Delta d\) (Å)</th><th scope="col">种子对 \(\Delta d\) (Å)</th><th scope="col">层间滑移 (Å)</th><th scope="col">自旋参与比</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">AA，B–B 种子</th><td>−0.229</td><td>0.550</td><td>−0.36</td><td>−0.44</td><td>0.00</td><td>0.78</td></tr>
+            <tr><th scope="row">A′B</th><td>−0.085</td><td>0.296</td><td>−0.16</td><td>−0.25</td><td>0.00</td><td>0.79</td></tr>
+            <tr><th scope="row">AA′</th><td>−0.096</td><td>0.344</td><td>+0.11</td><td>+0.05</td><td>0.01</td><td>0.49</td></tr>
+            <tr><th scope="row">AB′（假象）</th><td>−0.506</td><td>0.683</td><td>−0.39</td><td>−0.38</td><td>1.60</td><td>0.78</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><strong>结果不依赖种子。</strong>AA 中以 N–N 或 B–B 原子对为种子、种子取 0.35 或 0.75 Å，都收敛到同一能量 −0.229 eV；A′B 的两个种子也给出同一结果。强种子没有找到层间成键之类的共价极小。</li>
+        <li><strong>畸变遍及整个超胞。</strong>AA 的层间距整体缩小 0.36 Å，种子对处只多缩小约 0.08 Å；自旋参与比 0.78，即自旋分布在约 28 个原子上。这是周期性三重态密度（每 9 个原胞一个激子）的均匀响应，不是局域的自陷激子。对离域激子，这种均匀响应的能量随超胞面积按 \(1/N\) 减小，在稀薄极限下消失。</li>
+        <li><strong>AA′ 的层间距反而增大。</strong>默认种子下，平整结构的三重态 SCF 落在一个高 35 meV 的态上；表中用的是强种子给出的较低参考值。</li>
+        <li><strong>AB′ 是假象。</strong>上层整体滑移了 1.6 Å，滑向接近 A′B（B 对 B）的堆垛。这是小超胞中高能、不稳定堆垛的整体变化，与激子无关。</li>
+        <li><strong>单层对照没有自陷。</strong>3×3 单层三重态中，把一个 N 推出平面 0.30 Å 后，畸变在 8 步内回落到 0.09 Å，能量单调下降，仍比平整的三重态高 7 meV（第 9 步 SCF 未收敛，计算中止）。</li>
+        <li><strong>能量远远不够。</strong>Stokes 位移 0.3–0.55 eV，比观测到的约 1.75–2.25 eV 小得多。</li>
+      </ul>
+
+      <h3>5.4 为什么还不能下结论</h3>
+      <ul>
+        <li><strong>超胞太小。</strong>3×3 超胞边长 7.5 Å，每 9 个原胞一个激子，分不出局域态与均匀响应。Sio 与 Giustino 计算的 hBN 空穴极化子形成能只有约 14–16 meV（体相 −13.6 meV，单层 −15.9 meV），半高宽 10–15 Å；单层的收敛检验用到等效 42×42 到 152×152 的面内超胞，再外推到无限大；体相若直接用超胞计算，至少需要约 3.6 万个原子<a href="#ref-sio">[10]</a>。这样的大极化子装不进小超胞，能量也比 2 eV 小两个数量级，不能解释 4 eV 发光。</li>
+        <li><strong>需要的是小尺度的深能态。</strong>如果 4 eV 发光来自自陷，它应当是强局域的深能态。PBE 的离域误差倾向于抹平这样的态，所以需要杂化泛函。</li>
+        <li><strong>其他近似。</strong>用三重态代替单重态激子；PBE 能隙（4.2–4.8 eV）比实验低约 1.5–2 eV；没有 GW/BSE；线性部分没有 Fröhlich 通道。</li>
+      </ul>
+
+      <h3>5.5 正在进行的计算</h3>
+      <ul>
+        <li><strong>6×6 超胞（144 个原子）：</strong>AA（B–B 种子）与 AA′。判据：若弛豫能约为 3×3 的 1/4，说明是周期性响应；若基本不变，说明存在局域态。</li>
+        <li><strong>HSE06 单点：</strong>AA（B–B 种子）与 A′B 的平整结构与 PBE 弛豫结构，检验杂化泛函是否加深自陷。</li>
+      </ul>
+      <p>两组计算都在 Anvil 的 shared 分区排队，结果出来后更新本节，并在讨论记录中追加一条。</p>
+
+      <h3>5.6 初步判定</h3>
+      <p><strong>线性耦合：NO-GO。</strong>所有堆垛 \(g\lt1\)。<strong>小尺度深自陷态：待定。</strong>3×3 PBE 的结果不支持局域自陷，但超胞太小、泛函也不合适，不能排除。若继续这个方向，建议在大扭角的小公度原胞（21.8°，28 个原子）上用 EPW 在 k 空间求解激子极化子方程<a href="#ref-dai">[12]</a>，并用至少 6×6 的超胞做杂化泛函 ΔSCF。</p>
+    </section>
+
+    <section id="next" aria-labelledby="next-title">
+      <h2 id="next-title">6. 下一步</h2>
+      <ol>
+        <li><strong>MoSe₂/WSe₂：</strong>计算 1°–5° 的 moiré 声子（折叠声学支、弯曲、层间剪切与 phason，含晶格重构与 hBN 封装），用本次的形变势算独立玻色子边带，与 0.8 meV 的分立峰和 \(S\) 直接比较；确定两层是黏合还是滑移。</li>
+        <li><strong>扭转 hBN：</strong>等 6×6 与 HSE 的结果，再决定是否做 k 空间的激子极化子计算。</li>
+        <li><strong>载流子通道（笔记原来的目标）：</strong>先做 WSe₂/WS₂ 的同类估计（双层 \(\partial E_v/\partial z\)、层间刚度与 \(W_M\)、\(N_W\) 的比较），通过后再进入完整的第一性原理流程。</li>
+      </ol>
+    </section>
+
+    <section id="data" aria-labelledby="data-title">
+      <h2 id="data-title">7. 数据</h2>
+      <ul>
+        <li><a href="data/moire-mass-scaling.csv">moire-mass-scaling.csv</a>：连续模型中的带宽、Wannier 参与数与所需耦合（图 1）。</li>
+        <li><a href="data/tmd-ix-twist-scan.csv">tmd-ix-twist-scan.csv</a>：MoSe₂/WSe₂ 层间激子随扭角的带宽、各通道的极化子能量与 Huang–Rhys 因子（图 2、图 3）。</li>
+        <li><a href="data/tmd-ix-dft.json">tmd-ix-dft.json</a>：MoSe₂/WSe₂ 单层与双层的 DFT 参数，以及两块样品扭角下的完整结果。</li>
+        <li><a href="data/hbn-stackings.csv">hbn-stackings.csv</a>：hBN 双层六种堆垛的参数与 \(g\)（图 4）。</li>
+        <li><a href="data/hbn-triplet-3x3.csv">hbn-triplet-3x3.csv</a>：3×3 超胞中全部 ΔSCF 三重态计算，包括不同的种子（图 5）。</li>
+        <li><a href="data/hbn-dft.json">hbn-dft.json</a>：hBN 的单层、双层、线性判据、三重态几何分析与单层对照的完整结果。</li>
+      </ul>
+      <p class="muted">图由 <code>scripts/plot_results.py</code> 从这些文件生成。DFT 输入、原始输出与计算脚本保存在 Anvil 上，没有放进本仓库。</p>
+    </section>
+
+    <section id="references" aria-labelledby="references-title">
+      <h2 id="references-title">8. 参考文献</h2>
+      <ol class="references">
+        <li id="ref-arsenault">E. A. Arsenault et al., <a href="https://doi.org/10.1103/PhysRevLett.132.126501">Two-Dimensional Moiré Polaronic Electron Crystals</a>, Phys. Rev. Lett. 132, 126501 (2024). WSe₂/WS₂ 中 moiré 极化子电子晶体的实验与周期性 DFT 计算。</li>
+        <li id="ref-abramovitch">D. J. Abramovitch and M. Bernardi, <a href="https://arxiv.org/abs/2603.14800">Predicting electron-phonon coupling and electronic transport at the moiré scale in twisted bilayer graphene</a>, arXiv:2603.14800 (2026). 预印本。</li>
+        <li id="ref-mao">N. Mao et al., <a href="https://arxiv.org/abs/2607.11425">Interference-Enhanced Large Electron-Phonon Coupling from Raman-active Breathing Modes in Moiré Semiconductors</a>, arXiv:2607.11425 (2026). 预印本。</li>
+        <li id="ref-uzundal">C. B. Uzundal et al., <a href="https://arxiv.org/abs/2606.28185">Moiré Phonons and Emergent Exciton-Phonon Coupling in a Moiré Heterobilayer</a>, arXiv:2606.28185 (2026). 预印本。</li>
+        <li id="ref-ramos">A. Ramos-Alonso and H. Ochoa, <a href="https://doi.org/10.1103/z93l-2chl">Charged moiré phonons in twisted bilayer graphene</a>, Phys. Rev. B 114, L051106 (2026).</li>
+        <li id="ref-delgrande">R. R. Del Grande and D. A. Strubbe, <a href="https://arxiv.org/abs/2604.28143">Multi-scale calculation of light-induced structural changes in low-angle twisted bilayer WSe₂</a>, arXiv:2604.28143 (2026). 预印本。</li>
+        <li id="ref-iakovlev">Z. A. Iakovlev, M. A. Semina, M. M. Glazov and E. Ya. Sherman, <a href="https://doi.org/10.1103/PhysRevB.105.205305">Flexural deformations and collapse of bilayer two-dimensional crystals by interlayer excitons</a>, Phys. Rev. B 105, 205305 (2022).</li>
+        <li id="ref-soubelet">P. Soubelet, A. Delhomme, E. Blundo, A. V. Stier and J. J. Finley, <a href="https://doi.org/10.1038/s41467-025-64176-6">Polarons shape the interlayer exciton emission of MoSe₂/WSe₂ heterobilayers</a>, Nat. Commun. 16, 8735 (2025).</li>
+        <li id="ref-knorr">W. Knorr, S. Brem, G. Meneghini and E. Malic, <a href="https://doi.org/10.1039/d4nr00136b">Polaron-induced changes in moiré exciton propagation in twisted van der Waals heterostructures</a>, Nanoscale 16, 8996 (2024).</li>
+        <li id="ref-sio">W. H. Sio and F. Giustino, <a href="https://doi.org/10.1038/s41567-023-01953-4">Polarons in two-dimensional atomic crystals</a>, Nat. Phys. 19, 629 (2023).</li>
+        <li id="ref-roux">S. Roux et al., <a href="https://doi.org/10.1103/PhysRevX.15.021067">Exciton Self-Trapping in Twisted Hexagonal Boron Nitride homostructures</a>, Phys. Rev. X 15, 021067 (2025).</li>
+        <li id="ref-dai">Z. Dai, C. Lian, J. Lafuente-Bartolome and F. Giustino, <a href="https://doi.org/10.1103/PhysRevLett.132.036902">Excitonic Polarons and Self-Trapped Excitons from First-Principles Exciton-Phonon Couplings</a>, Phys. Rev. Lett. 132, 036902 (2024).</li>
+      </ol>
+      <p class="muted">期刊文章的标题、作者、期刊、卷与页码已与 Crossref 记录核对；预印本已与 arXiv 记录核对。</p>
+    </section>
+
+    <footer>
+      <p>色散 Holstein 模型中的孤立缺陷 · <a href="https://github.com/rjguo1208/dispersive-Holstein">页面与图的源文件</a> · <a href="https://github.com/rjguo1208/dispersive-Holstein/issues/new/choose">提问或反馈</a></p>
+    </footer>
+  </main>
+</body>
+</html>

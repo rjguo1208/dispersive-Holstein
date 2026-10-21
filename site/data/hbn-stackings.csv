@@ -1,0 +1,8 @@
+# hBN bilayer stackings (PBE+D3, 1x1 cell): interlayer distance, stacking energy, K-point gap and its z derivative, interlayer stiffness, contact polaron energies per cell and the 2D self-trapping parameter g (self-trapping needs g > 1)
+stacking,on_top_contacts,d_A,E_rel_meV_per_cell,gap_K_eV,dgap_dz_eV_per_A,K_z_eV_per_A2,hw_LB_meV,Ep0_LA_eV,Ep0_LB_eV,g
+AA,B/B + N/N,3.621,20.56,4.191,0.8564,0.2122,8.454,0.07669,1.728,0.658
+AB,B/N,3.33,0.001633,4.569,0.3404,0.2845,9.789,0.07669,0.2037,0.1022
+BA,N/B,3.331,0,4.571,0.3406,0.2839,9.78,0.07669,0.2043,0.1024
+AA',B/N + N/B,3.33,0.7411,4.762,-0.1898,0.2977,10.01,0.07669,0.0605,0.05001
+A'B,B/B,3.378,3.557,4.191,0.7622,0.2578,9.319,0.07669,1.127,0.4387
+AB',N/N,3.591,18.56,4.523,0.377,0.2173,8.556,0.07669,0.327,0.1472

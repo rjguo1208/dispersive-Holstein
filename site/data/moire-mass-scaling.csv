@@ -1,0 +1,20 @@
+# Triangular continuum model, a_M = 8 nm, psi = 0: lowest moire band width W_M, Wannier participation N_W (pristine cells, a = 0.328 nm) and the contact E_p^0 for lambda_M = 2 E_p^0/(N_W W_M) = 1
+carrier,mass_me,V_meV,W_M_meV,N_W,Ep0_needed_eV
+hole,0.45,5,14,444,3.11
+exciton,0.8,5,4.85,287,0.696
+exciton,1.1,5,2.26,223,0.253
+hole,0.45,10,7.45,261,0.973
+exciton,0.8,10,1.47,170,0.125
+exciton,1.1,10,0.456,138,0.0314
+hole,0.45,20,1.95,157,0.153
+exciton,0.8,20,0.174,109,0.0095
+exciton,1.1,20,0.0326,91,0.00148
+hole,0.45,30,0.575,121,0.0348
+exciton,0.8,30,0.0295,86,0.00127
+exciton,1.1,30,0.00384,72,0.000138
+hole,0.45,50,0.0717,89,0.00321
+exciton,0.8,50,0.00159,65,5.14e-05
+exciton,1.1,50,0.000116,54,3.15e-06
+hole,0.45,80,0.00554,69,0.00019
+exciton,0.8,80,4.59e-05,50,1.15e-06
+exciton,1.1,80,1.74e-06,42,3.68e-08
