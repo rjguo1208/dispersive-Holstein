@@ -58,3 +58,9 @@
 | Dai, Lian, Lafuente-Bartolome and Giustino, Phys. Rev. Lett. 132, 036902 (2024) | 10.1103/PhysRevLett.132.036902 |
 
 Soubelet 等的 S 值、峰间距与样品角度取自发表版正文；Roux 等与 Sio–Giustino 的数字取自 arXiv 全文。
+
+## 发布与线上检查
+
+- 推送触发的 `Check theory website` 通过（run 39665430926）；手动发布 `Deploy GitHub Pages` 通过（run 39665441379）。
+- 线上 `moire.html`、`en/moire.html`、讨论记录与其余页面，以及 `results/` 与 `data/` 中的文件均返回 HTTP 200。
+- 英文页的线上截图（`--timeout=60000`）中公式、图与表格显示正常。
